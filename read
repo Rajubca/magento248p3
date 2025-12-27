@@ -1,0 +1,4 @@
+used for require.js error
+
+php bin/magento config:set dev/template/allow_symlink 1
+php bin/magento cache:flush
