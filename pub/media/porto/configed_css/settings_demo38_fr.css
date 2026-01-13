@@ -1,0 +1,351 @@
+/**
+ * WARNING: Do not change this file. Your changes will be lost.
+ * 2025-10-20 03:10:46 */
+body.boxed {
+}
+@media (min-width: 768px) {
+    .page-layout-1column .product-info-main, .page-layout-2columns-left .product-info-main, .page-layout-2columns-right .product-info-main, .page-layout-3columns .product-info-main,.page-product-downloadable .product-options-bottom {
+        width: 57.17%;
+    }
+    .page-layout-1column .product.media, .page-layout-2columns-left .product.media, .page-layout-2columns-right .product.media, .page-layout-3columns .product.media,.page-product-downloadable .product-options-wrapper {
+        width: 40.83%;
+    }
+
+    .page-layout-1column .column.main > .custom-block ~ .product-info-main, .page-layout-2columns-left .column.main > .custom-block ~ .product-info-main, .page-layout-2columns-right .column.main > .custom-block ~ .product-info-main, .page-layout-3columns .column.main > .custom-block ~ .product-info-main {
+        width: 42.8775%;
+    }
+    .page-layout-1column .column.main > .custom-block ~ .product.media, .page-layout-2columns-left .column.main > .custom-block ~ .product.media, .page-layout-2columns-right .column.main > .custom-block ~ .product.media, .page-layout-3columns .column.main > .custom-block ~ .product.media {
+        width: 30.6225%;
+    }
+}
+
+body,li {
+    line-height: 22px;
+}
+p {
+    line-height: inherit;
+    letter-spacing: 0;
+}
+@media (max-width: 575px){
+body {
+    font-size: 13px;
+    line-height: 21px;
+}
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #222529;
+    letter-spacing: normal;
+    font-family: Poppins;
+}
+h1 {
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 44px;
+    letter-spacing: -0.05em;
+    margin: 0 0 32px 0;
+}
+h2 {
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 52px;
+    letter-spacing: -0.05em;
+    margin: 0 0 32px 0;
+}
+h3 {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: -0.05em;
+    margin: 0 0 20px 0;
+}
+h4 {
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 27px;
+    letter-spacing: -0.05em;
+    margin: 0 0 14px 0;
+}
+h5 {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: -0.325px;
+    margin: 0 0 14px 0;
+    color: #666666;
+}
+h6 {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: -0.05em;
+    margin: 0 0 14px 0;
+}
+html .heading-secondary, html .lnk-secondary, html .text-color-secondary {
+    color: #ff7272;
+}
+html .action.primary, html .btn {
+    font-family: Poppins;
+    letter-spacing: normal;
+    font-weight: 700;
+    line-height: 1.42857;
+    padding: .8em 2em;
+    border: 1px solid transparent;
+    border-radius: 0;
+}
+html .btn-modern {
+    text-transform: uppercase;
+    font-size: .75rem;
+    padding: .75rem 1.5rem;
+    font-weight: 600;
+    height: auto;
+}
+.btn-default.btn {
+    background: #fff;
+    box-shadow: none;
+    border-color: rgba(0,0,0,0.08);
+    border-bottom-color: rgba(0,0,0,.2);
+    color: #212529;
+}
+html .btn-xl {
+    font-size: 1rem;
+    padding: .8rem 2rem;
+}
+html .btn-lg {
+    line-height: 1.3333;
+    border-radius: 0;
+}
+.btn-modern.btn-xl {
+    font-size: 1rem;
+    padding: 1.25em 3.125em;
+}
+.btn-flat {
+    padding: 0!important;
+    background: none!important;
+    border: none!important;
+    border-bottom: 1px solid transparent!important;
+    box-shadow: none!important;
+    text-transform: uppercase;
+    font-size: .75rem;
+}
+html .btn-dark {
+    color: #fff;
+    background-color: #222529;
+    border-color: #222529 #222529 #0b0c0e;
+}
+html .btn-light {
+    color: #212529;
+    background-color: #fff;
+    border-color: #fff #fff #e6e6e6;
+}
+html .btn-quaternary {
+    color: #fff;
+    background-color: #000;
+    border-color: #000 #000 #000;
+}
+.btn-arrow.btn-dark {
+    color: #212529;
+}
+.btn-arrow:not(.btn-borders) {
+    background: none!important;
+    border: none!important;
+}
+.br-round {
+    border-radius: 6px !important;
+}
+html .background-color-secondary {
+    background-color: #f4a085 !important;
+}
+.me-2 {
+    margin-right: 0.5rem !important;
+}
+.ms-1 {
+    margin-left: 0.25rem !important;
+}
+.p-t-xs {
+    padding-top: 5px!important;
+}
+.p-t-md {
+    padding-top: 20px!important;
+}
+.m-t-sm {
+    margin-top: 10px!important;
+}
+.p-b-xs {
+    padding-bottom: 5px!important;
+}
+.m-b-xlg {
+    margin-bottom: 50px!important;
+}
+.me-3 {
+    margin-right: 1rem !important;
+}
+.pe-2 {
+    padding-right: 0.5rem !important;
+}
+.pe-5 {
+    padding-right: 3rem !important;
+}
+.p-r-xs {
+    padding-right: 5px!important;
+}
+.porto-u-heading {
+    margin-bottom: 17px;
+}
+.ms-n-3 {
+    text-indent: 3px;
+}
+.ms-n-6 {
+    text-indent: 6px;
+}
+.mr-n-3 {
+    margin-right: -3px;
+}
+.custom-bg {
+    background-image: linear-gradient(0deg, #F8F8F8 40%, #FFFFFF 100%);
+}
+.text-start {
+    text-align: left !important;
+}
+@media (min-width: 768px){
+.text-md-start {
+    text-align: left !important;
+}
+.me-md-3 {
+    margin-right: 1rem !important;
+}
+}
+@media (min-width: 992px){
+.layout-fullwidth .container, .layout-fullwidth .block.category.event, .layout-fullwidth .footer.content, .layout-fullwidth .header.content, .layout-fullwidth .navigation, .layout-fullwidth .page-main, .layout-fullwidth .page-wrapper>.breadcrumbs >ul, .layout-fullwidth .page-wrapper>.page-bottom, .layout-fullwidth .page-wrapper>.widget, .layout-fullwidth .top-container {
+    padding-left: 35px;
+    padding-right: 35px;
+}
+.text-lg-end {
+    text-align: right !important;
+}
+.ms-lg-auto {
+    margin-left: auto !important;
+}
+.d-lg-block {
+    display: block!important;
+}
+}
+@media (min-width: 1160px) {
+.text-xl-end {
+    text-align: right !important;
+}
+}
+@media (min-width: 1612px){
+.mb-xxl-0 {
+    margin-bottom: 0 !important;
+}
+}
+.font-weight-extra-bold {
+    font-weight: 800;
+}
+.porto-icon-shopping-cart:before {
+    content: '\e80d';
+}
+.minicart-wrapper .action.showcart .minicart-icon {
+    right: 0;
+    left: 0;
+}
+.main-panel-top {
+    background-image: linear-gradient(0deg, #F8F8F8 40%, #FFFFFF 100%);
+    border-bottom: 1px solid #e7e7e7;
+}
+.checkout-cart-index .page-title-wrapper .page-title {
+    font-family: inherit;
+    font-style: inherit;
+}
+.top-icon .porto-sicon-header {
+    margin-bottom: .75rem;
+}
+html .background-color-secondary {
+    background-color: #ff7272!important;
+}
+.side-custom-block .custom-block h2 {
+    font-size: inherit;
+    font-family: inherit;
+    font-style: inherit;
+}
+.main-upsell-product-detail {
+    margin-bottom: 0;
+}
+.footer, .footer p {
+    line-height: 25px;
+    letter-spacing: 0;
+}
+.footer .widgettitle, .footer .widget-title {
+    font-size: 15px;
+    color: #222529;
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+.footer-top {
+    padding-bottom: 40px;
+}
+.footer-top .custom-block:before,.footer-top .custom-block:after {
+    margin-bottom: 0;
+    border: none;
+    margin-top: 0;
+}
+.footer-middle > .container::before {
+    content: '';
+    display: block;
+    position: static;
+    left: 10px;
+    top: 0;
+    right: 10px;
+    border-top: 1px solid #e7e7e7;
+    margin-bottom: 2.5rem;
+}
+.footer-middle > .container::after {
+     border-color:#e7e7e7;
+     margin-top: .625rem;
+     position: static;
+}
+.porto-newsletter .block.newsletter .form.subscribe {
+    margin-left: 34px;
+    width: auto;
+}
+@media(max-width: 767px){
+.porto-newsletter .block.newsletter .form.subscribe {
+    margin-left: 0;
+}
+}
+.porto-newsletter .newsletter input {
+    height: 50px;
+    padding-left: 1.25rem;
+    background: #fff;
+    border-radius: 7px 7px 7px 7px;
+    font-size: 13px;
+    border-width: 2px 2px 2px 2px;
+    border-color: #bebebe;
+}
+.porto-newsletter .block.newsletter .field .control:before {
+    display: none;
+}
+.porto-newsletter .newsletter .action.subscribe {
+    border: none;
+    margin-left: 1rem;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.7px;
+    height: 50px;
+    padding: 8px 52px 8px 52px;
+    border-radius: 4px 4px 4px 4px;
+}
+.footer .widget>div>ul li {
+    margin-bottom: .625rem;
+}
+.footer-middle > .container {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.footer-bottom address {
+    text-align: center;
+}
+.footer-bottom {
+    font-size: 1em;
+}

@@ -1,0 +1,141 @@
+<?php if ($block->isModuleEnabled()) : ?>
+   <div class="container-fluid shatchi-product-tabs">
+      <ul class="shatchi-tab-nav d-flex justify-content-center mb-4 flex-wrap">
+         <?php
+         $tabsConfig = $block->getTabsConfig();
+         $firstTab = true; // To set the first enabled tab as active
+         foreach ($tabsConfig as $tab) :
+            if ($tab['enabled']) : ?>
+               <li class="tab-link <?= $firstTab ? 'active' : '' ?>" data-tab="<?= $tab['id'] ?>">
+                  <?= $tab['label'] ?>
+               </li>
+            <?php $firstTab = false;
+            endif; ?>
+         <?php endforeach; ?>
+      </ul>
+
+      <div class="tab-content-wrapper">
+         <?php
+         $firstTab = true; // Reset for content
+         foreach ($tabsConfig as $tab) :
+            if ($tab['enabled']) : ?>
+               <div id="<?= $tab['id'] ?>" class="tab-content <?= $firstTab ? 'active' : '' ?>">
+                  <?= $block->getLayout()->createBlock('Magento\Framework\View\Element\Template')->setTemplate($tab['template'])->toHtml(); ?>
+               </div>
+            <?php $firstTab = false;
+            endif; ?>
+         <?php endforeach; ?>
+      </div>
+   </div>
+
+   <style>
+      .shatchi-tab-nav {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-wrap: wrap;
+         gap: 15px;
+         margin: 0;
+         padding: 15px 10px;
+         list-style: none;
+      }
+
+      .shatchi-tab-nav li {
+         padding: 10px 20px;
+         background: #f3f3f3;
+         cursor: pointer;
+         font-weight: 600;
+         border-radius: 4px;
+         transition: background 0.3s, color 0.3s;
+         white-space: nowrap;
+      }
+
+      .shatchi-tab-nav li:hover {
+         background-color: #e0e0e0;
+      }
+
+      .shatchi-tab-nav li.active {
+         background: #6cb2d9;
+         color: white;
+      }
+
+      .tab-content {
+         display: none;
+      }
+
+      .tab-content.active {
+         display: block;
+      }
+   </style>
+
+   <script>
+      require(['jquery'], function($) {
+         $(document).ready(function() {
+            $('.tab-link').on('click', function() {
+               const target = $(this).data('tab');
+               $('.tab-link').removeClass('active');
+               $(this).addClass('active');
+
+               $('.tab-content').removeClass('active');
+               $('#' + target).addClass('active');
+
+               // Initialize Owl Carousel if needed
+               $('#' + target).find('.owl-carousel').each(function() {
+                  if (!$(this).hasClass('owl-loaded')) {
+                     $(this).owlCarousel({
+                        autoplay: true,
+                        autoplayTimeout: 5000,
+                        loop: true,
+                        nav: false,
+                        dots: true,
+                        responsive: {
+                           0: {
+                              items: 2
+                           },
+                           640: {
+                              items: 3
+                           },
+                           768: {
+                              items: 4
+                           },
+                           992: {
+                              items: 5
+                           },
+                           1200: {
+                              items: 6
+                           }
+                        }
+                     });
+                  }
+               });
+            });
+
+            // Trigger first tab's carousel if it exists
+            $('.tab-content.active .owl-carousel').owlCarousel({
+               autoplay: true,
+               autoplayTimeout: 5000,
+               loop: true,
+               nav: false,
+               dots: true,
+               responsive: {
+                  0: {
+                     items: 2
+                  },
+                  640: {
+                     items: 3
+                  },
+                  768: {
+                     items: 4
+                  },
+                  992: {
+                     items: 5
+                  },
+                  1200: {
+                     items: 6
+                  }
+               }
+            });
+         });
+      });
+   </script>
+<?php endif; ?>

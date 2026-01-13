@@ -1,0 +1,10 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/config.xsd">
+    <default>
+        <shatchi_contactsupport>
+            <email_settings>
+                <primary_email>default_primary@example.com</primary_email>
+                <secondary_email>default_secondary@example.com</secondary_email>
+            </email_settings>
+        </shatchi_contactsupport>
+    </default>
+</config>

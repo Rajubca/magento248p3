@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+
+    <system>
+        <!-- Main Tab -->
+        <tab id="shatchi" translate="label" sortOrder="100">
+            <label>Shatchi</label>
+        </tab>
+
+        <!-- Settings Section -->
+        <section id="shatchi_settings" translate="label" sortOrder="900"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Shatchi Layered Navigation</label>
+            <tab>shatchi</tab>
+            <resource>Magento_Backend::admin</resource>
+
+            <!-- Group: Products Custom Filter Settings -->
+            <group id="search_filter3" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Products Custom Filter Settings</label>
+
+                <!-- Subgroup: General Options -->
+                <group id="general_options" translate="label" sortOrder="5"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>General Options</label>
+
+                    <!-- <field id="enable_module" translate="label" type="select" sortOrder="10"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable Module</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    </field> -->
+
+                    <field id="popup_position" translate="label" type="select" sortOrder="20"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Popup Message Position</label>
+                        <comment>Select the position for popup messages below the header/above footer</comment>
+                        <source_model>Shatchi\CustomMessages1\Model\Config\Source\PopupPosition</source_model>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

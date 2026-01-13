@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/crontab.xsd">
+    <group id="default">
+        <job name="shatchi_chunky_generate" instance="Shatchi\SearchFilter3\Cron\GenerateChunks" method="execute">
+            <schedule>*/3 * * * *</schedule> <!-- Every 3 minutes -->
+        </job>
+    </group>
+</config>

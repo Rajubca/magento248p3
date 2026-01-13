@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Shatchi_CustomMessages1::css/custom-messages.css"/>
+    </head>
+
+    <body>
+
+        <referenceContainer name="page.top">
+            <referenceContainer name="page.messages" remove="true"/>
+        </referenceContainer>
+        <!-- Only on category pages, load the popup init -->
+        <referenceBlock name="global.messages" remove="true"/>
+
+        <referenceContainer name="after.body.start">
+            <block class="Shatchi\CustomMessages1\Block\PopupPositionBlock"
+                   name="shatchi_custommessages_init"
+                   template="Shatchi_CustomMessages1::html/messages.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

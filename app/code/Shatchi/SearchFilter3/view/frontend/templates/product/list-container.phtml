@@ -1,0 +1,297 @@
+<?php
+
+/** @var \Magento\Framework\View\Element\Template $block */
+$objectManager   = \Magento\Framework\App\ObjectManager::getInstance();
+$registry        = $objectManager->get('\Magento\Framework\Registry');
+// $customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
+$httpContext   = $objectManager->get(\Magento\Framework\App\Http\Context::class);
+
+$category        = $registry->registry('current_category');
+$categoryId      = $category ? $category->getId() : 0;
+// $isLoggedIn      = $customerSession->isLoggedIn();
+$isLoggedIn    = (bool)$httpContext->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+
+$baseUrl         = $block->getBaseUrl();
+$initialMaxPrice = $block->getMaxPrice(); // Initial max price from block
+$perPageOptions  = $block->getPerPageOptions(); // ['12', '24', '36']
+$productsPerRow  = $block->getProductsPerRow();
+$defaultPerPage  = $perPageOptions[0];
+
+$cleanUrl = $block->getUrlEncoder()->encode($block->getUrl('*/*/*', ['_current' => true]));
+$addToCartUrlPrefix = $cleanUrl;
+?>
+<style>
+    :root {
+        --sf3-cols: <?= (int)$productsPerRow ?: 4 ?>;
+    }
+</style>
+
+<style>
+    /* base grid: works on all screens */
+    #product-list-container {
+        display: grid;
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    /* bump the minimum a bit on tablets/desktop */
+    @media (min-width:768px) {
+        #product-list-container {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+    }
+
+    @media (min-width:992px) {
+        #product-list-container {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+    }
+
+    @media (min-width:1200px) {
+        #product-list-container {
+            /* exact-fit: N tracks that always fill 100% regardless of width */
+            --sf3-gap: 20px;
+            /* keep in sync with your gap */
+            grid-template-columns: repeat(var(--sf3-cols, 4),
+                    minmax(0, calc((100% - (var(--sf3-cols, 4) - 1) * var(--sf3-gap)) / var(--sf3-cols, 4))));
+            gap: var(--sf3-gap);
+        }
+    }
+
+
+    /* Fallback if CSS Grid isn't supported (older browsers) */
+    @supports not (display:grid) {
+        #product-list-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+
+        #product-list-container>li {
+            width: calc(50% - 20px);
+            margin: 10px;
+        }
+
+        @media (min-width:768px) {
+            #product-list-container>li {
+                width: calc(33.333% - 20px);
+            }
+        }
+
+        @media (min-width:992px) {
+            #product-list-container>li {
+                width: calc(25% - 20px);
+            }
+        }
+    }
+
+    /* @media (min-width: 1200px) {
+        #product-list-container {
+            grid-template-columns: repeat(<?= (int)$productsPerRow ?>, minmax(220px, 1fr));
+        }
+    } */
+</style>
+<style>
+    /* ── Per-image skeleton ───────────────────────────────────────────── */
+    .sf3-img-wrap {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1/1;
+        /* adjust to your typical image ratio */
+        overflow: hidden;
+        background: #f6f7f8;
+        border: 1px solid #eee;
+        border-radius: 8px;
+    }
+
+    .sf3-skeleton {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #f6f7f8 0%, #ecebeb 50%, #f6f7f8 100%);
+        background-size: 200% 100%;
+        animation: sf3-shimmer 1.1s linear infinite;
+    }
+
+    @keyframes sf3-shimmer {
+        0% {
+            background-position: 200% 0
+        }
+
+        100% {
+            background-position: -200% 0
+        }
+    }
+
+    .sf3-spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 3px solid #ddd;
+        border-top-color: #999;
+        animation: sf3-spin 0.8s linear infinite;
+    }
+
+    @keyframes sf3-spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg)
+        }
+    }
+
+    /* hide img until loaded */
+    .sf3-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: none;
+    }
+
+    /* once loaded */
+    .sf3-loaded .sf3-skeleton,
+    .sf3-loaded .sf3-spinner {
+        display: none;
+    }
+
+    .sf3-loaded .sf3-img {
+        display: block;
+    }
+</style>
+
+
+<!-- Root wrapper with data-mage-init so JS loads on every page refresh/insert -->
+
+<div class="shatchi-mobile-filter-toggle d-lg-none"
+    style="display:flex; justify-content:flex-start; align-items:center; padding:10px; background:#f7f7f7; border-bottom:1px solid #ddd;">
+    <a href="#" class="sidebar-toggle"
+        style="display:flex; align-items:center; gap:6px; font-weight:600; font-size:15px; color:#000;">
+        <svg style="width: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+            <line x1="15" x2="26" y1="9" y2="9" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="9" y1="9" y2="9" stroke="#000" stroke-width="2" />
+            <line x1="23" x2="26" y1="16" y2="16" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="17" y1="16" y2="16" stroke="#000" stroke-width="2" />
+            <line x1="17" x2="26" y1="23" y2="23" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="11" y1="23" y2="23" stroke="#000" stroke-width="2" />
+        </svg>
+        <span>Filter</span>
+    </a>
+    <div id="mobile-top-bar" class="d-lg-none">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <select class="sorter-dropdown no-arrow-dropdown">
+                <option value="name_asc" selected>Product Name: A-Z</option>
+                <option value="name_desc">Product Name: Z-A</option>
+                <?php if ($isLoggedIn): ?>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                <?php endif; ?>
+            </select>
+
+            <select class="pager-dropdown no-arrow-dropdown">
+                <?php foreach ($perPageOptions as $option): ?>
+                    <option value="<?= $option ?>" <?= ($option == $defaultPerPage) ? 'selected' : '' ?>>
+                        Show <?= $option ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Sorter and Pager -->
+<div id="toolbar-container" style="display: none; margin-bottom: 20px; justify-content: space-between;">
+    <div>
+        <select class="sorter-dropdown no-arrow-dropdown">
+            <!-- <option value="position_asc">Position: Low to High</option>
+                <option value="position_desc">Position: High to Low</option> -->
+            <option value="name_asc" selected>Product Name: A-Z</option>
+            <option value="name_desc">Product Name: Z-A</option>
+            <?php if ($isLoggedIn): ?>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+            <?php endif; ?>
+        </select>
+    </div>
+    <div>
+        <select class="pager-dropdown no-arrow-dropdown">
+            <?php foreach ($perPageOptions as $option): ?>
+                <option value="<?= $option ?>" <?= ($option == $defaultPerPage) ? 'selected' : '' ?>>
+                    Show <?= $option ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>
+
+<ol id="product-list-container"
+    class="products list items product-items "
+    style="--sf3-cols: <?= (int)$productsPerRow ?>;"
+    data-mage-init='{
+      "Shatchi_SearchFilter3/js/product-listing": {
+        "categoryId": "<?= (int)$categoryId ?>",
+        "isLoggedIn": "<?= (int)$isLoggedIn ?>",
+        "baseUrl": "<?= $block->escapeJs($baseUrl) ?>",
+        "maxPrice": "<?= (int)$initialMaxPrice ?>",
+        "productsPerRow": "<?= (int)$productsPerRow ?>",
+        "addToCartUrlPrefix": "<?= $addToCartUrlPrefix ?>"
+      }
+    }'>
+</ol>
+
+
+<div id="pagination-controls" style="display:none;margin-top: 20px; text-align: center;">
+    <button id="prev-page" disabled>Previous</button>
+    <span id="page-info"></span>
+    <button id="next-page">Next</button>
+</div>
+
+<div id="shatchi-loader-overlay" style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(255,255,255,0.8);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    ">
+    <div class="shatchi-spinner"></div>
+</div>
+<script>
+    require(['jquery', 'Shatchi_SearchFilter3/js/product-listing'], function($, init) {
+        var root = document.getElementById('product-list-container');
+        var cfg = {
+            categoryId: "<?= (int)$categoryId ?>",
+            isLoggedIn: "<?= (int)$isLoggedIn ?>",
+            baseUrl: "<?= $block->escapeJs($baseUrl) ?>",
+            maxPrice: "<?= (int)$initialMaxPrice ?>",
+            productsPerRow: "<?= (int)$productsPerRow ?>",
+            addToCartUrlPrefix: "<?= $addToCartUrlPrefix ?>"
+        };
+
+        function kick() {
+            if (!root) return;
+            // idempotent guard so we never double-bind
+            if ($(root).data('sf3Init')) return;
+            try {
+                init(cfg, root);
+                $(root).data('sf3Init', true);
+            } catch (e) {
+                console.error('[SF3] bootstrap failed', e);
+            }
+        }
+
+        // run now, and again on key lifecycle points
+        $(kick);
+        $(window).on('load', kick);
+        $('body').on('contentUpdated', kick);
+    });
+</script>

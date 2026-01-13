@@ -4,8 +4,6 @@
 !/pub/static/.htaccess
 /var/*
 !/var/.htaccess
-/app/etc/env.php
-/app/etc/config.php
 /generated/*
 /phpserver/
 /.idea/

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Shatchi_SpamTracker::spam_attempts" title="Spam Attempts" module="Shatchi_SpamTracker" sortOrder="10" parent="Magento_Customer::customer" action="spamtracker/attempts/index" resource="Shatchi_SpamTracker::spam_attempts"/>
+    </menu>
+</config>

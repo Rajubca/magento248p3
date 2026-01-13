@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <listingToolbar name="listing_top">
+        <massaction name="listing_massaction" component="Magento_Ui/js/grid/tree-massactions">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <!-- Tell massaction where the selected IDs come from -->
+                    <item name="selectProvider" xsi:type="string">
+                        customer_listing.customer_listing.customer_columns.ids
+                    </item>
+                </item>
+            </argument>
+            <action name="approve">
+                <settings>
+                    <type>customer_approve</type> <!-- 👈 unique type -->
+                    <label translate="true">Approve Customers</label>
+                    <url path="admin_141y2y/customer/massApprove"/>
+                    <confirm>
+                        <message translate="true">Are you sure you want to approve selected customers?</message>
+                        <title translate="true">Approve Customers</title>
+                    </confirm>
+                </settings>
+            </action>
+
+            <action name="disapprove">
+                <settings>
+                    <type>disapprove</type>
+                    <label translate="true">Disapprove Customers</label>
+                    <url path="admin_141y2y/customer/massDisapprove"/>
+                    <confirm>
+                        <message translate="true">Are you sure you want to disapprove selected customers?</message>
+                        <title translate="true">Disapprove Customers</title>
+                    </confirm>
+                </settings>
+            </action>
+            
+        </massaction>
+    </listingToolbar>
+
+
+    <columns name="customer_columns" class="Magento\Customer\Ui\Component\Listing\Columns">
+        <settings>
+            <editorConfig>
+                <param name="clientConfig" xsi:type="array">
+                    <item name="saveUrl" xsi:type="url" path="customer/index/inlineEdit"/>
+                    <item name="validateBeforeSave" xsi:type="boolean">false</item>
+                </param>
+                <param name="indexField" xsi:type="string">entity_id</param>
+                <param name="enabled" xsi:type="boolean">false</param>
+                <param name="selectProvider" xsi:type="string">customer_listing.customer_listing.customer_columns.ids</param>
+            </editorConfig>
+        </settings>
+        <column name="total_outlets" class="Shatchi\TradeAccount\Ui\Component\Listing\Column\TotalOutlets">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">false</item>
+                            <item name="validate-number" xsi:type="boolean">true</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Total Outlets</item>
+                    <item name="sortOrder" xsi:type="number">50</item>
+                </item>
+            </argument>
+        </column>
+        <column name="customers_message" class="Shatchi\TradeAccount\Ui\Component\Listing\Column\CustomersMessage">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="sortField" xsi:type="string">customers_message_table.value</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">false</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Customers Message</item>
+                    <item name="sortOrder" xsi:type="number">60</item>
+                </item>
+            </argument>
+        </column>
+
+        <!-- <column name="customers_message" class="Shatchi\TradeAccount\Ui\Component\Listing\Column\CustomersMessage">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">false</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Customers Message</item>
+                    <item name="sortOrder" xsi:type="number">60</item>
+                </item>
+            </argument>
+        </column> -->
+        <column name="customer_website" class="Shatchi\TradeAccount\Ui\Component\Listing\Column\CustomerWebsite">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">text</item>
+                        <item name="validation" xsi:type="array">
+                            <item name="required-entry" xsi:type="boolean">false</item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Customer Website</item>
+                    <item name="sortOrder" xsi:type="number">70</item>
+                </item>
+            </argument>
+        </column>
+        <column name="is_approved">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">select</item>
+                    <item name="editor" xsi:type="array">
+                        <item name="editorType" xsi:type="string">select</item>
+                        <item name="options" xsi:type="array">
+                            <item name="pending" xsi:type="array">
+                                <item name="value" xsi:type="string">pending</item>
+                                <item name="label" xsi:type="string" translate="true">Pending</item>
+                            </item>
+                            <item name="approved" xsi:type="array">
+                                <item name="value" xsi:type="string">approved</item>
+                                <item name="label" xsi:type="string" translate="true">approved</item>
+                            </item>
+                            <item name="notapproved" xsi:type="array">
+                                <item name="value" xsi:type="string">notapproved</item>
+                                <item name="label" xsi:type="string" translate="true">Not Approved</item>
+                            </item>
+                        </item>
+                    </item>
+                    <item name="label" xsi:type="string" translate="true">Is Approved</item>
+                    <item name="sortOrder" xsi:type="number">90</item>
+                </item>
+            </argument>
+        </column>
+    </columns>
+</listing>

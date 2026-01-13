@@ -1,0 +1,173 @@
+<?php
+$mediaUrl = $block->getMediaUrl();
+$collection = $block->getEntries();
+?>
+
+<!-- CSS -->
+<style>
+    .styled-table-container {
+        max-height: 500px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+    }
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    .styled-table th, .styled-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    .styled-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .styled-table th {
+        background-color: #f3f3f3;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+    }
+    .admin-image-thumb {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        cursor: pointer;
+    }
+    .admin-modal-fullscreen {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+    }
+    .admin-modal-fullscreen img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+    .admin-modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .table-filters input {
+        margin: 0 10px 10px 0;
+        padding: 5px;
+        font-size: 14px;
+    }
+</style>
+
+<!-- Modal -->
+<div class="admin-modal-fullscreen" id="adminImageModal">
+    <span class="admin-modal-close" onclick="adminCloseModal()">&times;</span>
+    <img id="adminModalImage" src="" alt="Full Image"/>
+</div>
+
+<h3>Submitted Contact Support Entries</h3>
+
+<!-- Filters -->
+<div class="table-filters">
+    <input type="text" id="searchInput" placeholder="Search table..." onkeyup="filterTable()" />
+    <input type="date" id="fromDate" onchange="filterTable()" />
+    <input type="date" id="toDate" onchange="filterTable()" />
+</div>
+
+<!-- Table -->
+<div class="styled-table-container">
+    <table class="styled-table" id="supportTable">
+        <thead>
+            <tr>
+                <th>ID</th><th>Name</th><th>Email</th><th>Telephone</th><th>Comment</th>
+                <th>Customer Type</th><th>Invoice Upload</th><th>Product Upload</th><th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($collection as $item): ?>
+                <tr>
+                    <td><?= $item->getId() ?></td>
+                    <td><?= $item->getName() ?></td>
+                    <td><?= $item->getEmail() ?></td>
+                    <td><?= $item->getTelephone() ?></td>
+                    <td><?= $item->getComment() ? nl2br($item->getComment()) : '' ?></td>
+                    <td><?= $item->getCustomerType() ?></td>
+                    <td>
+                        <?php
+                        $file = $item->getInvoiceUpload();
+                        if ($file && preg_match('/\.(jpg|jpeg|png)$/i', (string)$file)):
+                            $url = $mediaUrl . 'custom_upload' . $file;
+                            echo "<img src='$url' class='admin-image-thumb' onclick=\"adminShowModal('$url')\"/>";
+                        elseif ($file):
+                            echo "<a href='$mediaUrl/custom_upload$file' target='_blank'>Download</a>";
+                        endif;
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $file = $item->getProductUpload();
+                        if ($file && preg_match('/\.(jpg|jpeg|png)$/i', (string)$file)):
+                            $url = $mediaUrl . 'custom_upload' . $file;
+                            echo "<img src='$url' class='admin-image-thumb' onclick=\"adminShowModal('$url')\"/>";
+                        elseif ($file):
+                            echo "<a href='$mediaUrl/custom_upload$file' target='_blank'>Download</a>";
+                        endif;
+                        ?>
+                    </td>
+                    <td><?= $item->getCreatedAt() ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Scripts -->
+<script>
+    function adminShowModal(src) {
+        document.getElementById('adminModalImage').src = src;
+        document.getElementById('adminImageModal').style.display = 'flex';
+    }
+
+    function adminCloseModal() {
+        document.getElementById('adminImageModal').style.display = 'none';
+        document.getElementById('adminModalImage').src = '';
+    }
+
+    function filterTable() {
+        const search = document.getElementById("searchInput").value.toLowerCase();
+        const fromDate = document.getElementById("fromDate").value;
+        const toDate = document.getElementById("toDate").value;
+        const rows = document.querySelectorAll("#supportTable tbody tr");
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            const dateText = row.cells[8]?.textContent?.trim(); // Created At column
+            let isVisible = true;
+
+            // Search match
+            if (!rowText.includes(search)) {
+                isVisible = false;
+            }
+
+            // Date filter match
+            if (fromDate || toDate) {
+                const rowDate = new Date(dateText);
+                const from = fromDate ? new Date(fromDate) : null;
+                const to = toDate ? new Date(toDate) : null;
+
+                if ((from && rowDate < from) || (to && rowDate > to)) {
+                    isVisible = false;
+                }
+            }
+
+            row.style.display = isVisible ? "" : "none";
+        });
+    }
+</script>

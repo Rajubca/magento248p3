@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Shatchi_SearchFilter3::css/custom-product-list.css"/>
+    </head>
+    <body>
+        <!-- 🧹 Remove Magento default product list & toolbars -->
+        <referenceBlock name="product_list_toolbar" remove="true"/>
+        <referenceBlock name="product_list_toolbar_pager" remove="true"/>
+        <referenceBlock name="product_list_toolbar_pager_bottom" remove="true"/>
+        <referenceBlock name="category.products.list" remove="true"/>
+        <referenceBlock name="category.products" remove="true"/>
+
+        <!-- ✅ Add your custom slider block to sidebar -->
+        <referenceContainer name="sidebar.main">
+            <block class="Shatchi\SearchFilter3\Block\PriceSlider"
+                   name="shatchi.searchfilter3.slider"
+                   template="Shatchi_SearchFilter3::slider.phtml" 
+                   before="-"/>
+        </referenceContainer>
+
+       <!-- ✅ Load our custom AJAX product container -->
+        <referenceContainer name="content">
+            <block class="Shatchi\SearchFilter3\Block\Product\ProductList3"
+                   name="shatchi.chunky.productlist"
+                   template="Shatchi_SearchFilter3::product/list-container.phtml">
+                <!-- Add custom toolbar as a child block -->
+                <block class="Magento\Framework\View\Element\Template"
+                       name="shatchi.chunky.toolbar"
+                       template="Shatchi_SearchFilter3::toolbar.phtml"/>
+            </block>
+        </referenceContainer>
+
+    </body>
+</page>

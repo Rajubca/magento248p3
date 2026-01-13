@@ -1,0 +1,32 @@
+/* Popup styling Purvish has given*/
+.instruction-popup { 
+  border: 1px solid #9d7a2f; 
+  background: #fff; 
+  box-shadow: none; 
+  padding: 25px; 
+}
+
+.popup-close { 
+  background: #9d7a2f; 
+  box-shadow: none; 
+}
+
+.popup-tips { 
+  margin: 0; 
+}
+
+.popup-tips li { 
+  margin: 15px 0; 
+}
+
+.popup-title span { 
+  color: #9d7a2f;
+}
+
+/* Mobile styling */
+@media only screen and (max-width: 767px) {
+  .instruction-popup { 
+      max-width: 100%;
+      width: 90%; 
+  }
+}

@@ -1,0 +1,200 @@
+/* 
+  HTML5 ✰ Boilerplate 
+  
+  style.css contains a reset, font normalization and some base styles.
+  
+  credit is left where credit is due.
+  much inspiration was taken from these projects:
+    yui.yahooapis.com/2.8.1/build/base/base.css
+    camendesign.com/design/
+    praegnanz.de/weblog/htmlcssjs-kickstart
+*/
+
+/* 
+  html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
+  v1.4 2009-07-27 | Authors: Eric Meyer & Richard Clark
+  html5doctor.com/html-5-reset-stylesheet/
+*/
+
+ #draggableNav {
+  margin:0;
+  padding:0;
+  border:0;
+  outline:0;
+  font-size:100%;
+  vertical-align:baseline;
+  background:transparent;
+}                  
+ #draggableNav  { 
+    display:block;
+}
+
+#draggableNav  ul { list-style:none; 
+border: 0px !important;
+}
+
+
+
+a { margin:0; padding:0; font-size:100%; vertical-align:baseline; background:transparent; }
+
+
+
+/* END RESET CSS */
+
+
+/* fonts.css from the YUI Library: developer.yahoo.com/yui/
+   Refer to developer.yahoo.com/yui/3/cssfonts/ for font sizing percentages
+
+  There are three custom edits:
+   * remove arial, helvetica from explicit font stack
+   * we normalize monospace styles ourselves
+   * table font-size is reset in the HTML5 reset above so there is no need to repeat
+*/
+/* hack retained to preserve specificity */
+
+/* always force a scrollbar in non-IE */ 
+html { overflow-y: scroll; }
+
+ 
+/* Accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
+
+
+
+/* Remove margins for navigation lists */
+#draggableNav  ul,#draggableNav li { margin: 0; } 
+
+
+ 
+/* bicubic resizing for non-native sized IMG: 
+   code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
+.ie7 img { -ms-interpolation-mode: bicubic; }
+
+
+
+/* 
+ * Non-semantic helper classes 
+ */
+
+/* for image replacement */
+.ir { display: block; text-indent: -999em; overflow: scroll; background-repeat: no-repeat; text-align: left; direction: ltr; }
+
+/* Hide for both screenreaders and browsers
+   css-discuss.incutio.com/wiki/Screenreader_Visibility */
+.hidden { display: none; visibility: hidden; } 
+
+/* Hide only visually, but have it available for screenreaders 
+   www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden  */
+.visuallyhidden { position: absolute !important;    
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px); }
+
+/* Hide visually and from screenreaders, but maintain layout */
+.invisible { visibility: hidden; }
+
+/* >> The Magnificent CLEARFIX: Updated to prevent margin-collapsing on child elements << j.mp/bestclearfix */
+.clearfix:before, .clearfix:after {
+  content: "\0020"; display: block; height: 0; visibility: hidden;	
+} 
+
+.clearfix:after { clear: both; }
+/* Fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
+.clearfix { zoom: 1; }
+
+
+
+
+
+
+ /* Primary Styles
+    Author: 
+ */
+
+
+
+/* ******************************************* */
+
+#draggableNav  {
+
+  height: 26px;
+  text-align: center; }
+ #draggableNav ul {
+    padding: 0;
+    display: -moz-inline-box;
+    -moz-box-orient: vertical;
+    display: inline-block;
+    vertical-align: baseline;
+    zoom: 1;
+    *display: inline;
+    *vertical-align: auto;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    -ms-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    -o-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04); }
+ #draggableNav li {
+    float: left;
+    bborder-left: 1px solid #d2d2d2; }
+   #draggableNav li:first-child {
+      border-left: 0; }
+     #draggableNav li:first-child a {
+        border-radius: 6px 0 0 6px; }
+   #draggableNav li:last-child a {
+      border-radius: 0 6px 6px 0; }
+ #draggableNav a {
+    position: relative;
+    display: block;
+    padding: 0 14px;
+    font-size: 11px;
+    font-weight: bold;
+    color: #666;
+    color: rgb(221, 221, 221);
+    height: 26px;
+    line-height: 26px;
+    text-shadow: 0 1px #fff;
+    background: #fafafa;
+    background-color: #fcfcfc;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fcfcfc), color-stop(100%, #f0f0f0));
+    background-image: -webkit-linear-gradient(top, #fcfcfc, #f0f0f0);
+    background-image: -moz-linear-gradient(top, #fcfcfc, #f0f0f0);
+    background-image: -ms-linear-gradient(top, #fcfcfc, #f0f0f0);
+    background-image: -o-linear-gradient(top, #fcfcfc, #f0f0f0);
+    background-image: linear-gradient(top, #fcfcfc, #f0f0f0);
+
+    background-color: #2C2C2C;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fcfcfc), color-stop(100%, #f0f0f0));
+    background-image: -webkit-linear-gradient(top, #333333, #222222);
+    background-image: -moz-linear-gradient(top, #333333, #222222);
+    background-image: -ms-linear-gradient(top, #333333, #222222);
+    background-image: -o-linear-gradient(top, #333333, #222222);
+    background-image: linear-gradient(top, #333333, #222222);
+    
+    /*-webkit-box-shadow: inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+    -moz-box-shadow: inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+    -ms-box-shadow: inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+    -o-box-shadow: inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+    box-shadow: inset 1px 1px #fafafa, inset -1px -1px #fafafa; }*/
+	}
+
+   #draggableNav a:hover {
+      color: #333;
+      color: rgb(221, 221, 221); /* FIXME */
+      z-index: 10;
+      text-decoration: none;
+      /*
+      /-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+      /-moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+      /-ms-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+      /-o-box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), inset 1px 1px #fafafa, inset -1px -1px #fafafa;
+      /box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), inset 1px 1px #fafafa, inset -1px -1px #fafafa; 
+      */
+    }
+ #draggableNav li.active a,#draggableNav a:active,#draggableNav a:visited {
+    color: #333;
+    color: rgb(221, 221, 221);
+    bbackground: #fff;
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    -ms-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    -o-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.1); }
+ 

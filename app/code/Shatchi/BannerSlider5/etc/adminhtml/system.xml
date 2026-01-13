@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+
+        <!-- Shatchi Main Tab -->
+        <tab id="shatchi" translate="label" sortOrder="100">
+            <label>Shatchi</label>
+        </tab>
+
+        <!-- Section -->
+        <section id="shatchi_bannerslider5" translate="label" type="text" sortOrder="910"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>BannerSlider 5</label>
+            <tab>shatchi</tab>
+            <resource>Shatchi_BannerSlider5::config</resource>
+
+            <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Banner Slider</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="default_animation" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Slide Animation</label>
+                    <source_model>Shatchi\BannerSlider5\Model\Config\Source\AnimationOptions</source_model>
+                    <comment>Select animation effect for slides</comment>
+                </field>
+                <field id="default_offer" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Offer Text</label>
+                </field>
+
+                <field id="autoplay" translate="label" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Autoplay Slider</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="autoplay_speed" translate="label" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Autoplay Speed (ms)</label>
+                    <validate>validate-digits</validate>
+                </field>
+                 <!-- JSON Field for Slides -->
+                 <field id="slides_json" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Slides</label>
+                    <frontend_model>Shatchi\BannerSlider5\Block\Adminhtml\System\Config\Form\Field\SlidesJson</frontend_model>
+                </field>
+
+                <!-- <field id="slides_json" translate="label" type="textarea" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Slides JSON</label>
+                    <comment><![CDATA[
+                        Paste JSON like:<br/>
+                        [
+                          { "desktop_url": "https://...", "mobile_url": "https://...", "offer_text": "Hello", "animation": "fade" }
+                        ]
+                    ]]></comment>
+                </field> -->
+
+            </group>
+        </section>
+    </system>
+</config>

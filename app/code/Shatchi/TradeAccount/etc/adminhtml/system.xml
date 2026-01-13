@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- First define the tab with an ID -->
+        <tab id="shatchi" translate="label" sortOrder="100">
+            <label>Shatchi</label>
+        </tab>
+        
+        <!-- Then your section that references it -->
+        <section id="shatchi_tradeaccount_email" translate="label" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Trade Account Email</label>
+            <tab>shatchi</tab>
+            <resource>Shatchi_TradeAccount::config</resource>
+            <group id="shatchi_sender_settings" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Email Sender Settings</label>
+                <field id="shatchi_sender_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Provider(Company) Name</label>
+                </field>
+                <field id="shatchi_sender_email" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sender's Email</label>
+                </field>
+                
+            </group>
+        </section>
+    </system>
+</config>

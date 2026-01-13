@@ -1,0 +1,20 @@
+<?php
+
+/** @var $block \Shatchi\CustomCheckout\Block\Cart\Banner */ ?>
+<?php $d = $block->getDataForTemplate(); ?>
+<?php if ($d['apply']): ?>
+    <div class="message notice shatchi-cart-banner">
+        <?php if ($d['show_free']): ?>
+            <div class="subline"><?= __('Spend %1 more (ex VAT) to get free delivery.', $d['remaining']) ?></div>
+        <?php else: ?>
+            <div class="subline"><?= __('Add %1 more to avoid this surcharge.', $d['remaining']) ?></div>
+        <?php endif; ?>
+        <div><?= __('%1 delivery applies to orders under %2 (ex VAT).',  $d['surcharge'],$d['threshold']) ?></div>
+    </div>
+<?php else: ?>
+    <?php if ($d['show_free']): ?>
+        <div class="message success shatchi-cart-banner">
+            <div><?= __('You’ve unlocked free delivery!') ?></div>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

@@ -1,0 +1,830 @@
+<div id="landscape-warning">
+    <p>⚠️ Landscape mode is not supported.</p>
+    <p>Please rotate your device back to portrait.</p>
+</div>
+<div id="customTooltip" style="display:none; position:fixed; padding:6px 10px; background:rgba(255,255,255,0.95); color:#333; border-radius:5px; font-size:13px; pointer-events:none; z-index:1010;"></div>
+
+<!-- Instruction Popup -->
+<div id="instructionPopup" class="instruction-popup">
+    <div class="popup-content">
+        <div id="closeInstruction" class="popup-close">×</div>
+        <h2 class="popup-title">💡 Tips to use <span>Shatchi Slider</span></h2>
+        <ul class="popup-tips">
+            <li><strong>🧭 Navigation:</strong> You can <em>drag</em> the navigation bar <strong>vertically</strong> to reposition it.</li>
+            <li><strong>🔍 Zoom:</strong> Use <strong>mouse scroll</strong> or <strong>pinch to zoom</strong> on touch devices.</li>
+            <li><strong>⏱️ Auto Hide:</strong> This popup will disappear <strong>after 15 seconds</strong> if not closed manually.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- WOW Slider Container -->
+<div id="container25">
+    <div id="draggableNav">
+
+        <ul>
+            <li><a id='first' href="#" data-title="Go to First Page">First page</a></li>
+            <li><a id='back' href="#" data-title="Previous Page">Back</a></li>
+            <li><a id='next' href="#" data-title="Next Page">Next</a></li>
+            <li><a id='last' href="#" data-title="Go to Last Page">Last page</a></li>
+            <li><a id='slideshow' href="#" data-title="Start Slide Show">Slide Show</a></li>
+            <li><a id='fullscreen' href="#" data-title="Enter Fullscreen">Fullscreen</a></li>
+            <li><a id='thumbs' href="#" data-title="Show Thumbnails">Thumbs</a></li>
+        </ul>
+
+
+    </div>
+    <div id="main">
+        <div id='features'></div>
+    </div>
+    <div id='thumbs_holder'></div>
+</div>
+
+<!-- Popup -->
+<div id="imagePopup" class="popup">
+    <span id="closePopup" class="close">×</span>
+    <div id="zoomContainer">
+        <img id="popupImage" class="popup-image" src="" alt="Popup Image">
+    </div>
+</div>
+
+<style>
+    html {
+
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Existing styles remain unchanged */
+    .popup {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    #zoomContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        cursor: grab;
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        color: white;
+        font-size: 30px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        z-index: 5000;
+        padding: 5px 10px;
+        transition: 0.3s;
+    }
+
+    .close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+    }
+
+    #draggableNav {
+        z-index: 1000;
+
+        top: 13%;
+    }
+
+    #draggableNav ul {
+        border: 0px !important;
+    }
+
+    #draggableNav ul li {
+        position: relative;
+        display: inline-block;
+        margin: 0 1px;
+    }
+
+    #draggableNav ul li a {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-left: 32px;
+        /* enough for the background icon */
+        color: white;
+        font-size: 13px;
+        height: 40px;
+        line-height: 40px;
+        position: relative;
+        background-repeat: no-repeat;
+        background-position: 8px center;
+        white-space: nowrap;
+        border-radius: 8px;
+    }
+
+    /* Tooltip Style */
+    #draggableNav ul li a::after {
+        content: attr(data-title);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        transition: all 0.3s ease;
+
+    }
+
+    #draggableNav ul li a::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: rgba(255, 255, 255, 0.9);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    #draggableNav ul li a:hover::after,
+    #draggableNav ul li a:hover::before {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    #draggableNav ul li {
+        position: relative;
+        display: inline-block;
+        margin: 0 6px;
+    }
+
+    #draggableNav ul li a {
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: #000;
+        border-radius: 6px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 20px 20px;
+        position: relative;
+    }
+
+    /* Tooltip text */
+    #draggableNav ul li a::after {
+        content: attr(data-title);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        font-size: 12px;
+        padding: 5px 8px;
+        white-space: nowrap;
+        border-radius: 4px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 999;
+    }
+
+    #draggableNav ul li a::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: rgba(255, 255, 255, 0.95);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+    }
+
+    /* Show tooltip on hover */
+    #draggableNav ul li a:hover::after,
+    #draggableNav ul li a:hover::before {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+
+    #landscape-warning {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #000;
+        color: #fff;
+        text-align: center;
+        padding: 50px 20px;
+        font-size: 18px;
+        line-height: 1.5;
+        box-sizing: border-box;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    #landscape-warning.active {
+        display: flex;
+    }
+
+    #main {
+        margin-top: 50px;
+    }
+
+    @media screen and (max-width: 768px) {
+        #draggableNav {
+            top: 10%;
+        }
+    }
+
+    .instruction-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(to bottom right, #fdfcfb, #e2d1c3);
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        padding: 25px 35px;
+        z-index: 1025;
+        max-width: 500px;
+        animation: fadeInPopup 0.6s ease;
+    }
+
+    .popup-content {
+        position: relative;
+    }
+
+    .popup-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #3e2f1c;
+        text-align: center;
+    }
+
+    .popup-title span {
+        color: #b19777;
+    }
+
+    .popup-tips {
+        list-style: none;
+        padding: 0;
+        font-size: 16px;
+        color: #4d3b2f;
+    }
+
+    .popup-tips li {
+        margin: 12px 0;
+    }
+
+    .popup-close {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        z-index: 1026;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #b19777;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 16px;
+        width: 26px;
+        height: 26px;
+        text-align: center;
+        line-height: 26px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: background 0.3s ease;
+    }
+
+    .popup-close.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .popup-close:hover {
+        background: #a18665;
+    }
+
+    @keyframes fadeInPopup {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -60%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    .m_content_element p {
+        margin-left: 0 !important;
+    }
+
+    /* Popup styling Purvish has given*/
+    .instruction-popup {
+        border: 1px solid #9d7a2f;
+        background: #fff;
+        box-shadow: none;
+        padding: 25px;
+    }
+
+    .popup-close {
+        background: #9d7a2f;
+        box-shadow: none;
+    }
+
+    .popup-tips {
+        margin: 0;
+    }
+
+    .popup-tips li {
+        margin: 15px 0;
+    }
+
+    .popup-title span {
+        color: #9d7a2f;
+    }
+
+    /* Mobile styling */
+    @media only screen and (max-width: 767px) {
+        .instruction-popup {
+            max-width: 100%;
+            width: 90%;
+        }
+    }
+
+
+    /* Popup styling Purvish has given End*/
+    body.active--popup::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 999;
+        opacity: 1;
+        transition: opacity 0.4s ease-in-out;
+        pointer-events: all;
+    }
+
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease-in-out;
+    }
+
+    body.scroll-lock {
+        overflow: hidden !important;
+        height: 100vh;
+        /* optional, ensures no scroll on some browsers */
+        touch-action: none;
+        /* for mobile devices */
+    }
+</style>
+<script>
+    window.addEventListener('load', function() {
+        // Add class on page load
+        document.body.classList.add('active--popup', 'scroll-lock'); // ✅ Replaced $_$ with standard
+        const popup = document.getElementById('instructionPopup');
+        const closeBtn = document.getElementById('closeInstruction');
+        popup.style.display = 'flex';
+        setTimeout(() => {
+            closeBtn.classList.add('show');
+        }, 800);
+        setTimeout(() => {
+            popup.style.display = 'none';
+            document.body.classList.remove('active--popup', 'scroll-lock'); // ✅ Optional: ensure class is removed if auto-hidden
+        }, 15000);
+        closeBtn.addEventListener('click', function() {
+
+            document.body.classList.remove('active--popup', 'scroll-lock'); // ✅ Optional: ensure class is removed if auto-hidden
+            popup.style.display = 'none';
+        });
+        closeBtn.classList.add('visible');
+
+        function checkOrientation() {
+            const isLandscape = window.innerWidth > window.innerHeight;
+            const warningBox = document.getElementById('landscape-warning');
+            if (isLandscape && window.innerWidth < 1025) {
+                warningBox.classList.add('active');
+            } else {
+                warningBox.classList.remove('active');
+            }
+        }
+
+        checkOrientation();
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+    });
+</script>
+<script>
+    // console.log("Inside the script before require");
+    const firedEvent = true;
+    require(['jquery191', 'wow_book'], function($_$) {
+        // console.log("Inside the script before document.ready");
+        // console.log("jQuery version:", $_$.fn.jquery);
+        // console.log("WOW Book defined:", typeof $_$.fn.wowBook === 'function');
+
+        $_$(document).ready(function() {
+
+            var totalFiles = 114,
+                basePath = "<?php echo $block->getViewFileUrl('Shatchi_Catalogue::images/small_catalog_800_500/'); ?>",
+                filePrefix = "/Shatchi All Page Catouge 2025_Final Update_Page_",
+                fileExtension = ".webp";
+            var $container = $_$("#features");
+
+            for (var i = 0; i <= totalFiles; i++) {
+                var paddedNumber = String(i).padStart(3, '0');
+                var fileName = `${filePrefix}${paddedNumber}${fileExtension}`;
+                var fullUrl = basePath + fileName;
+                // console.log("Image URL:", fullUrl);
+                var $div = $_$('<div>', {
+                    'data-double': 'true'
+                });
+                var $img = $_$('<img>', {
+                    'src': fullUrl
+                });
+                $div.append($img);
+                $container.append($div);
+            }
+
+            var book = $_$('#features').wowBook({
+                height: 500,
+                width: 800,
+                centeredWhenClosed: true,
+                hardcovers: true,
+                turnPageDuration: 1000,
+                numberedPages: [1, -2],
+                controls: {
+                    next: '#next',
+                    back: '#back',
+                    first: '#first',
+                    last: '#last',
+                    slideShow: '#slideshow',
+                    thumbnails: '#thumbs',
+                    fullscreen: '#fullscreen'
+                },
+                scaleToFit: "#container25",
+                thumbnailsPosition: 'bottom',
+                flipSound: true,
+                flipSoundPath: "<?php echo $block->getViewFileUrl('Shatchi_Catalogue::sound/'); ?>",
+                flipSoundFile: ['/page-flip.mp3', '/page-flip.ogg'],
+                onFullscreenError: function() {
+                    alert("Fullscreen failed.");
+                }
+            }).css({
+                'display': 'none',
+                'margin': 'auto'
+            }).fadeIn(1000);
+            book.flipSound = false;
+
+            // console.log("WOW Book initialized:", book);
+
+            var lastTapTime = 0;
+            $_$("#features img").on("dblclick touchend", function(event) {
+                var imgSrc = $_$(this).attr("src"),
+                    match = imgSrc.match(/(\d+)\.webp$/);
+                if (!match) return;
+                var imgNumberFormatted = String(parseInt(match[1], 10)).padStart(3, '0');
+                var imageType = (event.offsetX < $_$(this).width() / 2) ? "left" : "right";
+                var imgElement = $_$(this);
+                var imgOffset = imgElement.offset();
+                var fullImageUrl = "<?php echo $block->getViewFileUrl('Shatchi_Catalogue::images/shatchi_catalogue_split1/'); ?>" +
+                    "/shatchi_" + imgNumberFormatted + "_" + imageType + ".webp";
+
+                if (event.type === "touchend") {
+                    var currentTime = new Date().getTime();
+                    var tapLength = currentTime - lastTapTime;
+                    if (tapLength < 500 && tapLength > 0) {
+                        if (imgOffset.left < 0) {
+                            imageType = "right";
+                        } else {
+                            imageType = "left";
+                        }
+                        // alert(fullImageUrl);
+                        fullImageUrl = "<?php echo $block->getViewFileUrl('Shatchi_Catalogue::images/shatchi_catalogue_split1/'); ?>" +
+                            "/shatchi_" + imgNumberFormatted + "_" + imageType + ".webp";
+                        showPopupImage(fullImageUrl); // ← our new function
+                    }
+                    lastTapTime = currentTime;
+                } else {
+                    // alert(lastTapTime);
+                    if (lastTapTime === 0)
+                        showPopupImage(fullImageUrl); // ← our new function
+                }
+            });
+            book.flipSound = false;
+            $_$("#closePopup").on("click", function() {
+                $_$("#imagePopup").fadeOut();
+                $_$("#popupImage").fadeOut(200, function() {
+                    $_$(this).attr("src", '').on('load', function() {
+                        $_$(this).fadeIn(200);
+                    });
+                });
+            });
+
+            let zoomLevel = 1,
+                minZoom = 1,
+                maxZoom = 10,
+                currentX = 0,
+                currentY = 0,
+                isDragging = false;
+            let popupImage = $_$('#popupImage');
+
+            popupImage.on('wheel', function(event) {
+                event.preventDefault();
+                zoomLevel += (event.originalEvent.deltaY < 0) ? 0.1 : -0.1;
+                zoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel));
+                popupImage.css({
+                    transform: `translate(${currentX}px, ${currentY}px) scale(${zoomLevel})`
+                });
+            });
+
+            popupImage.on('mousedown', function(event) {
+                isDragging = true;
+                startX = event.clientX - currentX;
+                startY = event.clientY - currentY;
+                popupImage.css('cursor', 'grabbing');
+                event.preventDefault();
+            });
+
+            $_$(document).on('mousemove', function(event) {
+                if (isDragging) {
+                    currentX = event.clientX - startX;
+                    currentY = event.clientY - startY;
+                    popupImage.css({
+                        transform: `translate(${currentX}px, ${currentY}px) scale(${zoomLevel})`
+                    });
+                }
+            }).on('mouseup', function() {
+                isDragging = false;
+                popupImage.css('cursor', 'grab');
+            });
+            // Add pinch-to-zoom for mobile devices
+            let initialDistance = 0;
+            let initialZoom = 1;
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let isTouchDragging = false;
+
+            popupImage.on('touchstart', function(event) {
+                if (event.originalEvent.touches.length === 1) {
+                    // Handle single-finger drag
+                    isTouchDragging = true;
+                    touchStartX = event.originalEvent.touches[0].clientX - currentX;
+                    touchStartY = event.originalEvent.touches[0].clientY - currentY;
+                    popupImage.css('cursor', 'grabbing');
+                }
+                if (event.originalEvent.touches.length === 2) {
+                    // Prevent default to avoid browser zoom
+                    event.preventDefault();
+
+                    // Calculate initial distance between two fingers
+                    const touch1 = event.originalEvent.touches[0];
+                    const touch2 = event.originalEvent.touches[1];
+                    initialDistance = Math.hypot(
+                        touch1.clientX - touch2.clientX,
+                        touch1.clientY - touch2.clientY
+                    );
+                    initialZoom = zoomLevel;
+                }
+            });
+
+            popupImage.on('touchmove', function(event) {
+                if (isTouchDragging && event.originalEvent.touches.length === 1) {
+                    event.preventDefault();
+                    currentX = event.originalEvent.touches[0].clientX - touchStartX;
+                    currentY = event.originalEvent.touches[0].clientY - touchStartY;
+                    popupImage.css({
+                        transform: `translate(${currentX}px, ${currentY}px) scale(${zoomLevel})`
+                    });
+                }
+                if (event.originalEvent.touches.length === 2) {
+                    // Prevent default to avoid browser zoom
+                    event.preventDefault();
+
+                    // Calculate new distance between two fingers
+                    const touch1 = event.originalEvent.touches[0];
+                    const touch2 = event.originalEvent.touches[1];
+                    const currentDistance = Math.hypot(
+                        touch1.clientX - touch2.clientX,
+                        touch1.clientY - touch2.clientY
+                    );
+
+                    // Calculate zoom change based on distance change
+                    const zoomChange = currentDistance / initialDistance;
+                    zoomLevel = initialZoom * zoomChange;
+                    zoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel));
+
+                    // Apply transform
+                    popupImage.css({
+                        transform: `translate(${currentX}px, ${currentY}px) scale(${zoomLevel})`
+                    });
+                }
+            });
+
+            popupImage.on('touchend', function(event) {
+                if (isTouchDragging){
+                    isTouchDragging=false;
+                    popupImage.css('cursor','grab');
+                }
+                // Reset pinch variables when fingers are lifted
+                initialDistance = 0;
+                initialZoom = zoomLevel;
+            });
+        });
+    }, function(err) {
+        console.error("RequireJS error:", err.requireType, err.requireModules);
+    });
+
+    function showPopupImage(src) {
+        const popup = document.getElementById("imagePopup");
+        const img = document.getElementById("popupImage");
+
+        img.onload = function() {
+            const naturalWidth = img.naturalWidth;
+            const naturalHeight = img.naturalHeight;
+
+            const screenHeight = window.innerHeight;
+            const maxDisplayHeight = screenHeight * 0.5;
+
+            const aspectRatio = naturalWidth / naturalHeight;
+            const scaledHeight = maxDisplayHeight;
+            const scaledWidth = scaledHeight * aspectRatio;
+
+            img.style.width = `${scaledWidth}px`;
+            img.style.height = `${scaledHeight}px`;
+
+            img.style.transform = `translate(0px, 0px) scale(1)`;
+            currentX = 0;
+            currentY = 0;
+            zoomLevel = 1;
+
+            popup.style.display = 'flex';
+        };
+
+        img.src = src;
+    }
+
+    function checkOrientation() {
+        const isLandscape = window.innerWidth > window.innerHeight;
+        const warningBox = document.getElementById('landscape-warning');
+        if (isLandscape && window.innerWidth < 1025) {
+            warningBox.classList.add('active');
+        } else {
+            warningBox.classList.remove('active');
+        }
+    }
+
+    window.addEventListener('load', checkOrientation);
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+</script>
+
+<script>
+    require(['jquery', 'lazyload'], function($) {
+        $(document).ready(function() {
+            function makeNavDraggableYOnly(navEl, containerEl) {
+                let startY = 0;
+                let isDragging = false;
+                let moved = false;
+                let startX = 0;
+                let targetEl = null;
+
+                function onStart(e) {
+                    isDragging = true;
+                    moved = false;
+
+                    if (e.type.startsWith('touch')) {
+                        startY = e.touches[0].clientY;
+                        startX = e.touches[0].clientX;
+                        targetEl = e.target.closest('a');
+                    } else {
+                        startY = e.clientY;
+                        startX = e.clientX;
+                    }
+
+                    document.addEventListener('mousemove', onMove);
+                    document.addEventListener('mouseup', onEnd);
+                    document.addEventListener('touchmove', onMove, {
+                        passive: false
+                    });
+                    document.addEventListener('touchend', onEnd);
+                }
+
+                function onMove(e) {
+                    if (!isDragging) return;
+
+                    let currentY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
+                    let deltaY = currentY - startY;
+
+                    if (Math.abs(deltaY) > 4) moved = true;
+
+                    moveToY(deltaY);
+                    startY = currentY;
+
+                    if (e.cancelable) e.preventDefault(); // Prevent scrolling
+                }
+
+                function onEnd(e) {
+                    if (!moved && targetEl) {
+                        // Simulate click only on touch devices and if it wasn’t a drag
+                        if (e.type === 'touchend') {
+                            e.preventDefault();
+                            targetEl.click();
+                        }
+                    }
+
+                    isDragging = false;
+                    moved = false;
+                    targetEl = null;
+
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onEnd);
+                    document.removeEventListener('touchmove', onMove);
+                    document.removeEventListener('touchend', onEnd);
+                }
+
+                navEl.addEventListener('mousedown', onStart);
+                navEl.addEventListener('touchstart', onStart);
+
+                function moveToY(deltaY) {
+                    let newTop = navEl.offsetTop + deltaY;
+                    const maxTop = containerEl.clientHeight - navEl.offsetHeight;
+                    newTop = Math.max(0, Math.min(maxTop, newTop));
+                    navEl.style.top = newTop + 'px';
+                }
+            }
+
+
+            const nav = document.getElementById("draggableNav");
+            const container = document.getElementById("container25");
+            if (nav && container) {
+                makeNavDraggableYOnly(nav, container);
+                // console.log("Draggable initialized");
+            } else {
+                console.error("Nav or container not found");
+            }
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const tooltip = document.getElementById("customTooltip");
+
+        document.querySelectorAll("#draggableNav a").forEach(link => {
+            link.addEventListener("mousemove", (e) => {
+                const tooltipText = link.getAttribute("data-title");
+                tooltip.innerText = tooltipText;
+                tooltip.style.display = "block";
+                tooltip.style.top = (e.clientY + 15) + "px";
+                tooltip.style.left = (e.clientX + 15) + "px";
+            });
+
+            link.addEventListener("mouseleave", () => {
+                tooltip.style.display = "none";
+            });
+        });
+    });
+</script>

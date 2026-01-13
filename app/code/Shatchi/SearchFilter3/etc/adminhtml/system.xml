@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+
+    <system>
+        <!-- Main Tab -->
+        <tab id="shatchi" translate="label" sortOrder="100">
+            <label>Shatchi</label>
+        </tab>
+
+        <!-- Settings Section -->
+        <section id="shatchi_settings" translate="label" sortOrder="900"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Shatchi Layered Navigation</label>
+            <tab>shatchi</tab>
+            <resource>Magento_Backend::admin</resource>
+
+            <!-- Group: Products Custom Filter Settings -->
+            <group id="search_filter3" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Products Custom Filter Settings</label>
+
+                
+
+                <!-- Subgroup: Display Options -->
+                <field id="per_page_values" translate="label" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Allowed Products Per Page</label>
+                    <comment>Comma-separated values like 12,24,36</comment>
+                </field>
+
+                <field id="per_row_products" translate="label" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Products Per Row</label>
+                    <comment>Enter a number like 2, 3, 4, 6 etc.</comment>
+                </field>
+
+                <!-- Subgroup: Filter Visibility Control -->
+                <group id="filter_visibility" translate="label" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter Visibility Control</label>
+
+                    <field id="filters_for_logged_in" translate="label" type="multiselect" sortOrder="10"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Filters for Logged-in Users</label>
+                        <source_model>Shatchi\SearchFilter3\Model\Config\Source\FilterOptions</source_model>
+                    </field>
+
+                    <field id="filters_for_guests" translate="label" type="multiselect" sortOrder="20"
+                           showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Filters for Guests</label>
+                        <source_model>Shatchi\SearchFilter3\Model\Config\Source\FilterOptions</source_model>
+                    </field>
+                </group>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework/Setup/Declaration/Schema/etc/db_schema.xsd">
+    
+    <table name="customer_grid_flat" resource="default" engine="innodb" comment="Customer Grid Flat Table">
+        <column name="total_outlets" xsi:type="int" nullable="true" comment="Total Outlets"/>
+        <column name="customers_message" xsi:type="text" nullable="true" comment="Customers Message"/>
+        <column name="customer_website" xsi:type="text" nullable="true" comment="Customer Website"/>
+    </table>
+</schema>

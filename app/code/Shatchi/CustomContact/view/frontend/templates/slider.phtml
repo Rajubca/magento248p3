@@ -1,0 +1,55 @@
+$slides = $block->getSlides();
+?>
+
+<?php if (!empty($slides)): ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+<div class="banner-slider-5">
+    <?php foreach ($slides as $slide): ?>
+        <div class="slide-item animate-<?= $slide['animation'] ?>">
+            <picture>
+                <source media="(max-width: 768px)" srcset="<?= $slide['mobile_url'] ?>">
+                <img src="<?= $slide['desktop_url'] ?>" alt="<?= $slide['offer_text'] ?? 'Slide' ?>">
+            </picture>
+            <?php if (!empty($slide['offer_text'])): ?>
+                <div class="slide-text"><?= $slide['offer_text'] ?></div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<style>
+.banner-slider-5 {
+    width: 100%;
+}
+.slide-item {
+    position: relative;
+}
+.slide-text {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+require(['jquery'], function($) {
+    $(document).ready(function () {
+        $('.banner-slider-5').slick({
+            dots: true,
+            arrows: true,
+            autoplay: true,
+            autoplaySpeed: 3000,
+            adaptiveHeight: true
+        });
+    });
+});
+</script>
+<?php endif; ?>

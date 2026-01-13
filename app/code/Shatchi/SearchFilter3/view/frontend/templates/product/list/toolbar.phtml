@@ -1,0 +1,57 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registry = $objectManager->get('\Magento\Framework\Registry');
+$customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
+$category = $registry->registry('current_category');
+$categoryId = $category ? $category->getId() : 0;
+$isLoggedIn = $customerSession->isLoggedIn();
+$baseUrl = $block->getBaseUrl();
+$initialMaxPrice = $block->getMaxPrice(); // Initial max price from block
+?>
+
+<div class="custom-toolbar" style="margin-bottom: 20px; display:flex; justify-content: space-between; flex-wrap: wrap;">
+    <div>
+        <select id="sorter" class="no-arrow-dropdown">
+            <option value="position_asc">Position: Low to High</option>
+            <option value="position_desc">Position: High to Low</option>
+            <option value="name_asc" selected>Product Name: A-Z</option>
+            <option value="name_desc">Product Name: Z-A</option>
+            <option value="price_asc">Price: Low to High</option>
+            <option value="price_desc">Price: High to Low</option>
+        </select>
+    </div>
+    <div>
+        <select id="pager" class="no-arrow-dropdown">
+            <option value="10" selected>Show 10</option>
+            <option value="20">Show 20</option>
+            <option value="50">Show 50</option>
+        </select>
+    </div>
+</div>
+
+<style>
+    .custom-toolbar .no-arrow-dropdown {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        width: 220px;
+        font-size: 14px;
+        border-radius: 4px;
+        background-image: none;
+    }
+</style>
+<script>
+    require([
+        'jquery'
+    ], function ($) {
+        'use strict';
+        if($('.layered-filter-block-container').length == 0){
+            $('.infinite-loader').hide();
+            $('.toolbar.toolbar-products').show();
+        }
+    });
+</script>

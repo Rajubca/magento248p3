@@ -1,0 +1,11 @@
+<?php /** @var $block \Shatchi\CustomCheckout\Block\Cart\FreeDelivery */ ?>
+<?php if ($block->isActive()): ?>
+    <?php $remaining = $block->getRemaining(); ?>
+    <div class="shatchi-free-delivery <?= $remaining > 0 ? 'notice' : 'success' ?>">
+        <?php if ($remaining > 0): ?>
+            <?= __('Add %1 more to get free delivery.', $block->formatPrice($remaining)) ?>
+        <?php else: ?>
+            <?= __('You’ve unlocked free delivery!') ?>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

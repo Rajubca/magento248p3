@@ -1,0 +1,25 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="shatchi_contactsupport" translate="label" sortOrder="900" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Contact/Support</label>
+            <tab>shatchi</tab>
+            <resource>Magento_Backend::admin</resource>
+
+            <group id="email_settings" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Email Settings</label>
+
+                <field id="primary_email" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Primary Email</label>
+                </field>
+
+                <field id="secondary_email" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secondary Email</label>
+                </field>
+                <field id="show_data" translate="label" type="note" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Show Submitted Contact Data</label>
+                    <frontend_model>Shatchi\CustomContact\Block\Adminhtml\System\Config\ContactData</frontend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="spam_logs" resource="default" engine="innodb" comment="Spam Registration Attempts">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" identity="true" nullable="false" comment="ID"/>
+        <column xsi:type="varchar" name="email" nullable="false" length="255" comment="Email"/>
+        <column xsi:type="timestamp" name="attempt_date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Attempt Date"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>

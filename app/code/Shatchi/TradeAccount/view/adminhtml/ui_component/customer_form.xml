@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui/etc/ui_configuration.xsd">
+
+    <fieldset name="general">
+        <field name="total_outlets" sortOrder="200" formElement="input">
+            <settings>
+                <dataScope>total_outlets</dataScope>
+                <label translate="true">Total Outlets</label>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="customer_website" sortOrder="205" formElement="input">
+            <settings>
+                <dataScope>customer_website</dataScope>
+                <label translate="true">Customer Website</label>
+            </settings>
+        </field>
+
+        <field name="customers_message" sortOrder="210" formElement="textarea">
+            <settings>
+                <dataScope>customers_message</dataScope>
+                <label translate="true">Customers Message</label>
+            </settings>
+        </field>
+        
+    </fieldset>
+
+</form>

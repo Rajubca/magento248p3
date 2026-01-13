@@ -1,0 +1,14 @@
+<?php /** @var $block \Shatchi\CustomCheckout\Block\Cart\Surcharge */ ?>
+<?php if ($block->applies()): ?>
+    <div class="shatchi-surcharge notice">
+        <?= __(
+            'Spend %1 more (ex VAT) to get FREE delivery.',$block->formatPrice($block->getRemaining())
+            // Orders under %1 (ex VAT) incur a %2 surcharge (plus VAT).',
+            // $block->formatPrice($block->getThreshold()),
+            // $block->formatPrice($block->getAmount())
+        ) ?>
+        <div class="avoid">
+            <?= __('%1 delivery applies to orders under %2 (ex VAT).', $block->formatPrice($block->getThreshold()),$block->formatPrice($block->getAmount())) ?>
+        </div>
+    </div>
+<?php endif; ?>

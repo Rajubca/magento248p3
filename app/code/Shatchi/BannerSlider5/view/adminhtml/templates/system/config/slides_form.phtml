@@ -1,0 +1,134 @@
+<style>
+.slide-card {
+    border: 1px solid #ccc;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+.slide-card input,
+.slide-card select {
+    display: block;
+    margin-bottom: 8px;
+    width: 100%;
+}
+.success-msg, .error-msg {
+    margin-top: 10px;
+    padding: 8px;
+    border-radius: 4px;
+    display: none;
+}
+.success-msg {
+    background: #d4edda;
+    color: #155724;
+}
+.error-msg {
+    background: #f8d7da;
+    color: #721c24;
+}
+</style>
+
+<?php
+$slides = json_decode($block->getData('slides_json'), true) ?? [];
+// $ajaxUrl = $block->getUrl('bannerslider5/config/slidejsonsave');
+$ajaxUrl = $block->getBaseUrl() . 'bannerslider5/config/slidejsonsave';
+
+$formKey=$block->getFormKey();
+?>
+<input type="hidden" name="form_key" value="<?= $block->getFormKey() ?>" />
+
+<div id="slide-wrapper">
+    <?php foreach ($slides as $i => $slide): ?>
+        <div class="slide-card" data-index="<?= $i ?>">
+            <input type="text" name="slide[<?= $i ?>][desktop_image]" placeholder="Desktop Image" value="<?= htmlspecialchars($slide['desktop_image']) ?>" />
+            <input type="text" name="slide[<?= $i ?>][mobile_image]" placeholder="Mobile Image" value="<?= htmlspecialchars($slide['mobile_image']) ?>" />
+            <input type="text" name="slide[<?= $i ?>][offer_text]" placeholder="Offer Text" value="<?= htmlspecialchars($slide['offer_text']) ?>" />
+            <input type="number" name="slide[<?= $i ?>][sort_order]" placeholder="Sort Order" value="<?= (int) $slide['sort_order'] ?>" />
+            <select name="slide[<?= $i ?>][animation]">
+                <option value="fade" <?= $slide['animation'] === 'fade' ? 'selected' : '' ?>>fade</option>
+                <option value="flip" <?= $slide['animation'] === 'flip' ? 'selected' : '' ?>>flip</option>
+            </select>
+            <select name="slide[<?= $i ?>][image_mode]">
+                <option value="background" <?= $slide['image_mode'] === 'background' ? 'selected' : '' ?>>background</option>
+                <option value="img" <?= $slide['image_mode'] === 'img' ? 'selected' : '' ?>>img</option>
+            </select>
+            <button type="button" onclick="this.parentElement.remove()">Remove</button>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<button type="button" onclick="addSlide()">Add Slide</button>
+<button type="button" id="save-slides-btn">Save Slides</button>
+
+<div class="success-msg" id="success-msg">Slides saved successfully!</div>
+<div class="error-msg" id="error-msg">Failed to save slides.</div>
+
+<script>
+function addSlide() {
+    const wrapper = document.getElementById('slide-wrapper');
+    const index = wrapper.children.length;
+
+    const html = `
+        <div class="slide-card" data-index="${index}">
+            <input type="text" name="slide[${index}][desktop_image]" placeholder="Desktop Image" />
+            <input type="text" name="slide[${index}][mobile_image]" placeholder="Mobile Image" />
+            <input type="text" name="slide[${index}][offer_text]" placeholder="Offer Text" />
+            <input type="number" name="slide[${index}][sort_order]" placeholder="Sort Order" />
+            <select name="slide[${index}][animation]">
+                <option value="fade">fade</option>
+                <option value="flip">flip</option>
+            </select>
+            <select name="slide[${index}][image_mode]">
+                <option value="background">background</option>
+                <option value="img">img</option>
+            </select>
+            <button type="button" onclick="this.parentElement.remove()">Remove</button>
+        </div>`;
+    wrapper.insertAdjacentHTML('beforeend', html);
+}
+
+document.getElementById('save-slides-btn').addEventListener('click', function () {
+    const slides = [];
+    const cards = document.querySelectorAll('.slide-card');
+
+    cards.forEach((card, index) => {
+        const slide = {
+            desktop_image: card.querySelector('input[name^="slide["][name*="[desktop_image]"]').value.trim(),
+            mobile_image: card.querySelector('input[name^="slide["][name*="[mobile_image]"]').value.trim(),
+            offer_text: card.querySelector('input[name^="slide["][name*="[offer_text]"]').value.trim(),
+            sort_order: card.querySelector('input[name^="slide["][name*="[sort_order]"]').value,
+            animation: card.querySelector('select[name^="slide["][name*="[animation]"]').value,
+            image_mode: card.querySelector('select[name^="slide["][name*="[image_mode]"]').value
+        };
+        slides.push(slide);
+    });
+
+    fetch("<?= $ajaxUrl ?>", {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-Magento-Form-Key': '<?= $block->getFormKey() ?>'
+    },
+     body: JSON.stringify({ slide: slides })
+        // body: new URLSearchParams({
+        //     form_key: "<?= $formKey ?>",
+        //     slide: JSON.stringify(slides)
+        // })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('success-msg').style.display = 'block';
+            document.getElementById('error-msg').style.display = 'none';
+        } else {
+            document.getElementById('success-msg').style.display = 'none';
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        document.getElementById('success-msg').style.display = 'none';
+        document.getElementById('error-msg').style.display = 'block';
+    });
+});
+</script>

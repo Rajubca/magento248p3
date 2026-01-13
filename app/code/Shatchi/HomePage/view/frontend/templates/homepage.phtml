@@ -1,0 +1,141 @@
+<!-- SEO Meta & Structured Data -->
+<link rel="canonical" href="<?= $block->escapeUrl($block->getUrl('')) ?>" />
+<meta name="description" content="Discover festive, outdoor, party, and gift products from Shatchi. Shop Christmas decorations, garden furniture, balloons, gifts and more." />
+<meta name="keywords" content="Christmas decorations, hot tubs, garden furniture, party supplies, gifts, Shatchi" />
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Shatchi",
+    "url": "<?= $block->escapeUrl($block->getUrl('')) ?>",
+    "description": "Importer and distributor of high-quality seasonal and gift products in the UK",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "GB"
+    }
+  }
+</script>
+
+<h1 class="visually-hidden">Shatchi - UK’s Leading Distributor of Seasonal, Outdoor, and Party Products</h1>
+
+<!-- Preload Hero Image -->
+<link rel="preload" as="image" href="<?= $block->getBaseUrl() . 'media/wysiwyg/slider/christmas-232.webp' ?>" />
+
+<div class="container-fluid no-margin no-padding">
+  <div class="row no-padding">
+    <div class="order-2 home-banner-slider col-lg-12">
+      <div id="banner-slider-demo-2"
+        class="porto-carousel home-banner-slider owl-carousel dots-style-1 mb-0 nav-inside nav-inside-left">
+
+        <!-- Slide 1 -->
+        <div class="porto-ultimate-content-box has-content-pos justify-content-center"
+          style="background-image: url('<?= $block->getBaseUrl() . 'media/wysiwyg/slider/christmas-232.webp' ?>');">
+          <h2 class="vc_custom_heading mb-0 align-left heading-light">Boost Your Sales</h2>
+          <h3 class="vc_custom_heading mb-3 align-left heading-light">with Shatchi's Christmas Range</h3>
+          <div class="btn-container mb-0 d-inline-block">
+            <a href="<?= $block->getUrl('christmas') ?>" class="btn btn-modern btn-lg btn-dark">SHOP NOW</a>
+          </div>
+        </div>
+
+        <!-- Lazy Slides -->
+        <?php
+        $lazySlides = [
+          'media/wysiwyg/slider/showroom-1.webp',
+          'media/wysiwyg/slider/showroom-2.webp',
+          'media/wysiwyg/slider/showroom-3.webp'
+        ];
+        foreach ($lazySlides as $img): ?>
+          <div class="porto-ultimate-content-box has-content-pos justify-content-center"
+            data-bg="<?= $block->getBaseUrl() . $img ?>"></div>
+        <?php endforeach; ?>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .porto-ultimate-content-box {
+    padding: 20px 20px 20px 7.25%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-height: 440px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+  }
+
+  h2.vc_custom_heading {
+    font-size: 5em;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  h3.vc_custom_heading {
+    font-size: 3em;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  @media (max-width: 768px) {
+    h2.vc_custom_heading {
+      font-size: 2em;
+    }
+
+    h3.vc_custom_heading {
+      font-size: 1.5em;
+    }
+
+    .porto-ultimate-content-box {
+      min-height: 250px;
+    }
+  }
+</style>
+
+<!-- Lazy-load background images using IntersectionObserver -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const lazyBgs = document.querySelectorAll('.porto-ultimate-content-box[data-bg]');
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.style.backgroundImage = `url('${el.dataset.bg}')`;
+          el.removeAttribute('data-bg');
+          obs.unobserve(el);
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    lazyBgs.forEach(el => observer.observe(el));
+  });
+</script>
+
+<!-- Owl Carousel Init via Magento -->
+<script type="text/javascript">
+  require(['jquery', 'owl.carousel/owl.carousel.min'], function($) {
+    $('#banner-slider-demo-2').owlCarousel({
+      items: 1,
+      autoplay: true,
+      autoplayTimeout: 5000,
+      dots: true,
+      nav: false,
+      loop: true,
+      animateIn: 'fadeIn',
+      animateOut: 'fadeOut'
+    });
+  });
+</script>

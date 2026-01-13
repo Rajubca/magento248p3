@@ -30,7 +30,7 @@ class DailydealsList extends \Magento\Catalog\Block\Product\ListProduct {
             \Magento\Catalog\Model\ResourceModel\Product\Collection $collection,
             \Magento\Framework\App\ResourceConnection $resource,
             array $data = [],
-            \Magento\Framework\Serialize\Serializer\Json $serializer = null
+            ?\Magento\Framework\Serialize\Serializer\Json $serializer = null
     ) {
         $this->categoryRepository = $categoryRepository;
         $this->_collection = $collection;

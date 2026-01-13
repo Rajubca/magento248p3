@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/config.xsd">
+    <default>
+        <shatchi_bannerslider5>
+            <general>
+                <enabled>1</enabled>
+                <default_offer>Enjoy mobile-friendly banners!</default_offer>
+                <autoplay>1</autoplay>
+                <autoplay_speed>3000</autoplay_speed>
+            </general>
+        </shatchi_bannerslider5>
+    </default>
+</config>

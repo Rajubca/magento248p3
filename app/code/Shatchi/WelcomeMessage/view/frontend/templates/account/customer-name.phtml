@@ -1,0 +1,7 @@
+<?php
+/** @var \Magento\Customer\Model\Session $customerSession */
+$customerSession = $block->getCustomerSession();
+?>
+<?php if ($block->isLoggedIn()): ?>
+    <span class="customer-name"><?= $block->escapeHtml($block->getCustomerName()) ?></span>
+<?php endif; ?>

@@ -802,15 +802,25 @@ class Collection extends \Magento\Catalog\Model\ResourceModel\Product\Collection
         $aggregations = $this->searchResult->getAggregations();
         // This behavior is for case with empty object when we got EmptyRequestDataException
         if (null !== $aggregations) {
+            // $bucket = $aggregations->getBucket($field . RequestGenerator::BUCKET_SUFFIX);
+            // if ($bucket) {
+            //     foreach ($bucket->getValues() as $value) {
+            //         $metrics                   = $value->getMetrics();
+            //         $result[$metrics['value']] = $metrics;
+            //     }
+            // } else {
+            //     throw new StateException(__("The bucket doesn't exist."));
+            // }
             $bucket = $aggregations->getBucket($field . RequestGenerator::BUCKET_SUFFIX);
-            if ($bucket) {
-                foreach ($bucket->getValues() as $value) {
-                    $metrics                   = $value->getMetrics();
-                    $result[$metrics['value']] = $metrics;
-                }
-            } else {
-                throw new StateException(__("The bucket doesn't exist."));
+            if (!$bucket) {
+                return [];
             }
+
+            foreach ($bucket->getValues() as $value) {
+                $metrics                   = $value->getMetrics();
+                $result[$metrics['value']] = $metrics;
+            }
+
         }
 
         return $result;

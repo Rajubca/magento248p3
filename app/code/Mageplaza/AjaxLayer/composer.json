@@ -2,7 +2,7 @@
   "name": "mageplaza/module-ajax-layered-navigation",
   "description": "Magento 2 Ajax Layered Navigation Extension",
   "require": {
-    "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
+    "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
     "mageplaza/module-core": "^1.4.12"
   },
   "type": "magento2-module",

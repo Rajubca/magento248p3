@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Menu/etc/menu.xsd">
+    <menu>
+        <!-- <add id="Shatchi_ShowLinked::redirect_customer"
+             title="Show Linked Customer"
+             module="Shatchi_ShowLinked"
+             sortOrder="50"
+             parent="Magento_Customer::customer"
+             action="shatchi_showlinked/redirect/customer"
+             resource="Magento_Customer::manage"/>
+        <add id="Shatchi_ShowLinked::redirect_form"
+             title="Customer Redirect Form"
+             module="Shatchi_ShowLinked"
+             sortOrder="100"
+             parent="Magento_Customer::customer"
+             action="shatchi_showlinked/redirect/myform"
+             resource="Magento_Customer::manage"/> -->
+         <!-- Remove specific submenus under "Customers" -->
+        <remove id="Magento_Customer::customer_manage"/>
+
+        <!-- Hide "Login as Customer Log" menu -->
+        <remove id="Magento_LoginAsCustomerLog::login_log"/>
+
+         <!-- Remove "Now Online" menu -->
+        <remove id="Magento_Customer::customer_online"/>
+        
+        <!-- Remove "Login as Customer" menu -->
+        <!-- <remove id="Magento_LoginAsCustomer::login_as_customer_log"/> -->
+
+        <add id="Shatchi_ShowLinked::redirect_customer_all"
+             title="All Customer (Newly)"
+             module="Shatchi_ShowLinked"
+             sortOrder="150"
+             parent="Magento_Customer::customer"
+             action="shatchi_showlinked/redirect/showall"
+             resource="Magento_Customer::manage"/>
+    </menu>
+</config>

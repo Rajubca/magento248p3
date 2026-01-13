@@ -1,0 +1,281 @@
+<?php if (!$block->isEnabled()) return; ?>
+<?php $slides = $block->getSlides();
+$animation = htmlspecialchars($slide['animation'] ?? $block->getDefaultAnimation());
+
+?>
+
+<div class="banner-slider-5" style="display: none;">
+    <?php foreach ($slides as $slide): ?>
+        <?php
+        $mode = $slide['image_mode'] ?? 'img';
+        $desktopUrl = htmlspecialchars($slide['desktop_image']);
+        $mobileUrl = htmlspecialchars($slide['mobile_image']);
+        $offerText = htmlspecialchars($slide['offer_text'] ?? '');
+        ?>
+
+        <div class="slide-item <?= htmlspecialchars($slide['animation'] ?? $block->getDefaultAnimation()) ?>">
+            <?php if ($mode === 'background'): ?>
+                <div class="slide-background"
+                    style="background-image: url('<?= $desktopUrl ?>');"
+                    data-mobile-url="<?= $mobileUrl ?>"></div>
+            <?php else: ?>
+                <picture>
+                    <source media="(max-width: 768px)" srcset="<?= $mobileUrl ?>">
+                    <img src="<?= $desktopUrl ?>" alt="<?= $offerText ?>" loading="lazy">
+                </picture>
+            <?php endif; ?>
+
+            <?php if (!empty($offerText)): ?>
+                <div class="slide-text"><?= $offerText ?></div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
+<style>
+    .banner-slider-5 {
+        position: relative;
+        width: 80%;
+        margin: 0 auto;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.05s ease-out;
+
+    }
+
+    .banner-slider-5.slick-initialized {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Slide item */
+    .slide-item {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .slide-item picture,
+    .slide-item img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    /* Offer text */
+    .slide-text {
+        position: absolute;
+        bottom: 20px;
+        left: 30px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-size: 18px;
+        font-weight: bold;
+        max-width: 90%;
+        z-index: 2;
+    }
+
+    /* Arrows inside image */
+    .slick-prev,
+    .slick-next {
+        z-index: 5;
+        width: 40px;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+        font-size: 0;
+    }
+
+    .slick-prev::before,
+    .slick-next::before {
+        font-size: 20px;
+        color: white;
+        line-height: 40px;
+    }
+
+    .slick-prev {
+        left: 10px;
+    }
+
+    .slick-next {
+        right: 10px;
+    }
+
+    .banner-slider-5 .slick-arrow {
+        outline: none;
+        border: none;
+    }
+
+    .slide-background {
+        width: 100%;
+        height: clamp(250px, 60vw, 500px);
+        /* Combines desktop and mobile logic */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+
+    @media (min-width: 768px) {
+        .slide-background {
+            height: 500px;
+        }
+    }
+
+    /* Base style for all animated slides */
+    .slide-item {
+        animation-duration: 0.8s;
+        animation-fill-mode: both;
+    }
+
+    /* Fade */
+    .slide-item.fade {
+        animation-name: fadeIn;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Slide */
+    .slide-item.slide {
+        animation-name: slideIn;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Zoom */
+    .slide-item.zoom {
+        animation-name: zoomIn;
+    }
+
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* Flip */
+    .slide-item.flip {
+        animation-name: flipIn;
+        backface-visibility: hidden;
+    }
+
+    @keyframes flipIn {
+        from {
+            transform: rotateY(90deg);
+            opacity: 0;
+        }
+
+        to {
+            transform: rotateY(0deg);
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    require(['jquery', 'slick'], function($) {
+        $(document).ready(function() {
+
+            if (window.innerWidth <= 768) {
+                $('.slide-background').each(function() {
+                    const mobileUrl = $(this).data('mobile-url');
+                    if (mobileUrl) {
+                        $(this).css('background-image', `url('${mobileUrl}')`);
+                    }
+                });
+            }
+            const $slider = $('.banner-slider-5');
+            const $images = $slider.find('img');
+            const totalImages = $images.length;
+
+            let loaded = 0;
+            let initialized = false;
+
+            if (totalImages === 0) {
+                initSlider();
+                return;
+            }
+
+            $images.each(function() {
+                if (this.complete) {
+                    onImageLoad();
+                } else {
+                    $(this).on('load error', onImageLoad);
+                }
+            });
+
+            function onImageLoad() {
+
+                loaded++;
+                if (!initialized && loaded >= 1) {
+                    initSlider(); // early init after first image
+                }
+            }
+
+            function initSlider() {
+                initialized = true;
+                $('.slider-initial-fallback, .slider-loader').hide();
+                $slider.show();
+
+                $slider.slick({
+                    dots: true,
+                    arrows: true,
+                    autoplay: <?= $block->getAutoplay() ? 'true' : 'false' ?>,
+                    autoplaySpeed: <?= (int) $block->getAutoplaySpeed() ?: 3000 ?>,
+                    adaptiveHeight: false,
+                    waitForAnimate: false,
+                    fade:  <?= ($animation === 'fade') ? 'true' : 'false' ?>, // important to avoid Slick’s default slide motion
+                    cssEase: 'linear',
+                    speed: 300
+                });
+
+
+                // 🔁 Re-apply animation class on each slide change
+                $slider.on('beforeChange', function(event, slick, currentSlide, nextSlide) {
+                    const $current = $(slick.$slides.get(nextSlide));
+                    const animationClass = $current.attr('class').split(' ').find(cls => ['fade', 'slide', 'zoom', 'flip'].includes(cls));
+
+                    if (animationClass) {
+                        $current.removeClass(animationClass); // Remove to reset
+                        void $current[0].offsetWidth; // Force reflow
+                        $current.addClass(animationClass); // Re-add to trigger
+                    }
+                });
+            }
+
+
+        });
+    });
+</script>

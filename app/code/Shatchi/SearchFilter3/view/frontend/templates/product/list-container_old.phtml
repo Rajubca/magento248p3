@@ -1,0 +1,819 @@
+<?php
+
+/** @var \Magento\Framework\View\Element\Template $block */
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$registry = $objectManager->get('\Magento\Framework\Registry');
+$customerSession = $objectManager->get(\Magento\Customer\Model\Session::class);
+$category = $registry->registry('current_category');
+$categoryId = $category ? $category->getId() : 0;
+$isLoggedIn = $customerSession->isLoggedIn();
+$baseUrl = $block->getBaseUrl();
+$initialMaxPrice = $block->getMaxPrice(); // Initial max price from block
+$perPageOptions = $block->getPerPageOptions(); // ['12', '24', '36']
+$productsPerRow = $block->getProductsPerRow();
+$defaultPerPage = $perPageOptions[0];
+?>
+<div class="shatchi-mobile-filter-toggle d-lg-none"
+    style="display:flex; justify-content:flex-start; align-items:center; padding:10px; background:#f7f7f7; border-bottom:1px solid #ddd;">
+    <a href="#" class="sidebar-toggle"
+        style="display:flex; align-items:center; gap:6px; font-weight:600; font-size:15px; color:#000;">
+        <svg style="width: 20px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+            <line x1="15" x2="26" y1="9" y2="9" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="9" y1="9" y2="9" stroke="#000" stroke-width="2" />
+            <line x1="23" x2="26" y1="16" y2="16" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="17" y1="16" y2="16" stroke="#000" stroke-width="2" />
+            <line x1="17" x2="26" y1="23" y2="23" stroke="#000" stroke-width="2" />
+            <line x1="6" x2="11" y1="23" y2="23" stroke="#000" stroke-width="2" />
+        </svg>
+        <span>Filter</span>
+    </a>
+</div>
+
+<!-- Sorter and Pager -->
+<div id="toolbar-container" style="display: none;margin-bottom: 20px; justify-content: space-between; flex-wrap: wrap;">
+    <div>
+        <select id="sorter" class="no-arrow-dropdown">
+            <option value="position_asc">Position: Low to High</option>
+            <option value="position_desc">Position: High to Low</option>
+            <option value="name_asc" selected>Product Name: A-Z</option>
+            <option value="name_desc">Product Name: Z-A</option>
+            <?php if ($isLoggedIn): ?>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+            <?php endif; ?>
+
+        </select>
+    </div>
+    <div>
+        <select id="pager" class="no-arrow-dropdown">
+            <?php foreach ($perPageOptions as $option): ?>
+                <option value="<?= $option ?>" <?= ($option == $defaultPerPage) ? 'selected' : '' ?>>
+                    Show <?= $option ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+</div>
+
+<ol id="product-list-container" class="products list items product-items"></ol>
+
+<div id="pagination-controls" style="display:none;margin-top: 20px; text-align: center;">
+    <button id="prev-page" disabled>Previous</button>
+    <span id="page-info"></span>
+    <button id="next-page">Next</button>
+</div>
+<div id="shatchi-loader-overlay" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255,255,255,0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+">
+    <div class="shatchi-spinner"></div>
+</div>
+
+<style>
+    #product-list-container {
+        display: grid;
+        /* grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); */
+
+        grid-template-columns: repeat(<?= $productsPerRow ?>, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .product-item {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .product-item:hover {
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+    }
+
+    .product-item-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-image-photo {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .product-item-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+        height: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 5px 0;
+    }
+
+    .price-box {
+        font-size: 16px;
+        margin-top: 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .price-box .price-starprice {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .callforprice-action button {
+        background-color: #fff;
+        color: #222;
+        border: 1px solid #222;
+        padding: 8px 12px;
+        font-weight: bold;
+        margin-top: 10px;
+        cursor: pointer;
+        text-transform: uppercase;
+        width: 100%;
+        display: inline-block;
+    }
+
+    .callforprice-action button:hover {
+        background-color: #222;
+        color: #fff;
+    }
+
+    .stock.available {
+        font-size: 14px;
+        margin-top: 6px;
+        color: green;
+    }
+
+    .stock.unavailable {
+        font-size: 14px;
+        margin-top: 6px;
+        color: red;
+    }
+
+    .product-item-actions .actions-primary {
+        margin-top: 10px;
+    }
+
+    .action.tocart.primary {
+        background-color: #1979c3;
+        color: #fff;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+    .action.tocart.primary:hover {
+        background-color: #155d9b;
+    }
+
+    .no-arrow-dropdown {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 10px;
+        width: 220px;
+        font-size: 14px;
+        border-radius: 4px;
+        background-image: none;
+    }
+
+    #pagination-controls button {
+        padding: 8px 16px;
+        margin: 0 10px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        cursor: pointer;
+    }
+
+    #pagination-controls button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    #pagination-controls button:hover:not(:disabled) {
+        background-color: #f0f0f0;
+    }
+
+    #page-info {
+        margin: 0 10px;
+        font-size: 14px;
+    }
+
+    /* for sorter & pager */
+    .fade-in {
+        animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* shatchi spinner */
+    .shatchi-spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid #ccc;
+        border-top-color: #1979c3;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+
+    }
+
+    /* Shuffle from here product */
+    @keyframes cardShuffle {
+        0% {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .product-item {
+        animation: cardShuffle 0.4s ease-in-out both;
+    }
+
+    @media (max-width: 1199px) {
+        #product-list-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 991px) {
+        #product-list-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        #product-list-container {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+</style>
+
+
+<script type="text/javascript">
+    require(['jquery'], function($) {
+        // alert(<?= $productsPerRow ?>);
+        let allProducts = [];
+        let filteredProducts = [];
+
+        let currentPage = 1;
+        let productsPerPage = 12;
+        let priceMinInput, priceMaxInput;
+        let maxPrice = <?= (int) $initialMaxPrice ?>;
+        let currentSort = 'name_asc';
+        let currentStockFilter = 'all';
+        $(document).on('click', '.add-to-cart-btn', function() {
+            const productId = $(this).data('product-id');
+            const formKey = $.mage.cookies.get('form_key');
+            const minQty = $(this).data('min-qty') || 1;
+            $.ajax({
+                url: '<?= $baseUrl ?>checkout/cart/add/uenc/<?= $block->getUrlEncoder()->encode($block->getUrl('*/*/*', ['_current' => true])) ?>/product/' + productId + '/',
+                type: 'POST',
+                data: {
+                    product: productId,
+                    qty: minQty,
+                    form_key: formKey
+                },
+                success: function(res) {
+                    alert('Product added to cart! '+minQty);
+                    // Optionally update minicart here
+                },
+                error: function(err) {
+                    alert('Could not add to cart.');
+                }
+            });
+        });
+
+        // Debounce function to limit rapid filter updates
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this,
+                    args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+
+        // Combined filter function
+        function filterProducts(products) {
+            let filtered = products;
+
+            // Filter by price first
+            filtered = filterProductsByPrice(filtered);
+
+            // Then filter by stock
+            filtered = filterProductsByStock(filtered);
+
+            return filtered;
+        }
+
+        function filterProductsByPrice(products) {
+            const minPrice = parseFloat(priceMinInput.value) || 0;
+            const maxPriceValue = parseFloat(priceMaxInput.value) || maxPrice;
+            return products.filter(product => {
+                if (!product.price) return false;
+                const price = parseFloat(product.price);
+                return price >= minPrice && price <= maxPriceValue;
+            });
+        }
+
+        function filterProductsByStock(products) {
+            if (currentStockFilter === 'all') return products;
+
+            return products.filter(product => {
+                const stock = product.stock || 'in_stock'; // <-- default should be 'in_stock'
+                return (currentStockFilter === 'in' && stock === 'in_stock') ||
+                    (currentStockFilter === 'out' && stock === 'out_of_stock');
+            });
+        }
+
+
+        function sortProducts(products) {
+            const sorted = [...products];
+            switch (currentSort) {
+                case 'position_asc':
+                    return sorted;
+                case 'position_desc':
+                    return sorted.reverse();
+                case 'name_asc':
+                    return sorted.sort((a, b) => a.name.localeCompare(b.name));
+                case 'name_desc':
+                    return sorted.sort((a, b) => b.name.localeCompare(a.name));
+                case 'price_asc':
+                    return sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+                case 'price_desc':
+                    return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+                default:
+                    return sorted;
+            }
+        }
+
+        function updatePriceLabel() {
+            document.getElementById('price-range-label').textContent = `£${priceMinInput.value} - £${priceMaxInput.value}`;
+        }
+
+        function updateTrack() {
+            const min = parseInt(priceMinInput.value);
+            const max = parseInt(priceMaxInput.value);
+            const track = document.querySelector('.range-track');
+            const minPercent = (min / maxPrice) * 100;
+            const maxPercent = (max / maxPrice) * 100;
+            track.style.background = `linear-gradient(to right, #ddd ${minPercent}%, #555 ${minPercent}%, #555 ${maxPercent}%, #ddd ${maxPercent}%)`;
+        }
+
+        function updateSliderMaxPrice(products) {
+            const prices = products.map(product => parseFloat(product.price)).filter(price => !isNaN(price));
+            const newMaxPrice = prices.length > 0 ? Math.ceil(Math.max(...prices)) : maxPrice;
+            if (newMaxPrice !== maxPrice) {
+                maxPrice = newMaxPrice;
+                priceMinInput.max = maxPrice;
+                priceMaxInput.max = maxPrice;
+                priceMaxInput.value = maxPrice;
+                updatePriceLabel();
+                updateTrack();
+            }
+        }
+
+        function renderProducts(products, isLoggedIn) {
+            const container = document.getElementById('product-list-container');
+            const toolbar = document.getElementById('toolbar-container');
+            const pager1 = document.getElementById('pagination-controls');
+            if (!container) {
+                console.error('Product container missing.');
+                return;
+            }
+
+            container.innerHTML = '';
+            // alert(products.length + "=Length");
+            if (products.length === 0) {
+                container.innerHTML = '<p>No products match your filters.</p>';
+                toolbar?.style.setProperty('display', 'none');
+                pager1?.style.setProperty('display', 'none');
+                return;
+            }
+
+            // Show them only if product count > 0
+            toolbar?.style.setProperty('display', 'flex');
+            pager1?.style.setProperty('display', 'block');
+            toolbar?.classList.add('fade-in');
+            pager1?.classList.add('fade-in');
+
+
+            products.forEach((product, index) => {
+                const productUrl = product.url_key || '#';
+                const productName = product.name || 'Unknown Product';
+                const price = product.price ? parseFloat(product.price).toFixed(2) : null;
+                const isInStock = product.stock === 'in_stock' ? 'In Stock' : 'Out of Stock';
+                const imageUrl = `<?= $baseUrl ?>media/catalog/product${product.image || '/placeholder.jpg'}`;
+                const productId = product.id || 'unknown';
+                const minQty = product.min_qty || '1';
+
+                const li = document.createElement('li');
+                li.className = 'item product product-item';
+                li.setAttribute('data-price', price || '0.00');
+                li.setAttribute('data-min-qty', minQty);
+                li.setAttribute('data-stock', isInStock === 'In Stock' ? 'in' : 'out');
+                li.setAttribute('data-name', productName);
+
+                // 💡 Add staggered delay
+                li.style.animationDelay = `${index * 80}ms`;
+                li.innerHTML = `<div class="product-item-info type1" data-container="product-grid">
+        <div class="product photo product-item-photo">
+            <a href="${productUrl}" tabindex="-1">
+                <img class="product-image-photo default_image" src="${imageUrl}" alt="${productName}">
+            </a>
+        </div>
+        <div class="product details product-item-details">
+            <strong class="product name product-item-name">
+                <a class="product-item-link" href="${productUrl}">${productName}</a>
+            </strong>
+            
+            <div class="price-box price-final_price">
+                <span class="price-container price-final_price tax weee">
+                    <span class="price-wrapper">
+                        ${isLoggedIn
+                        ? `£${price || '0.00'}`
+                        : `£<span class="price starprice">**˙**</span>`
+                    }
+                    </span>
+                </span>
+            </div>
+
+            ${!isLoggedIn? `<div class="callforprice-action callforprice-action-${productId}">
+                        <a href="<?= $baseUrl ?>customer/account/login/" class="action primary">
+                            <span>Login for price</span>
+                        </a>
+                    </div>`
+                        : ''
+                    }
+
+                    
+                
+        `;
+                if (isLoggedIn && isInStock === 'In Stock') {
+                    li.innerHTML += `
+                    
+                                    <div class="product-item-actions">
+                                        <div class="actions-primary">
+                                            <button type="button" 
+                                                    class="action tocart primary add-to-cart-btn"
+                                                    data-product-id="${productId}" data-min-qty="${minQty}">
+                                                <span>Add to Cart</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                }else {
+                    if(isInStock==="Out of Stock"){
+                        li.innerHTML += ` <div class="stock ${isInStock === 'In Stock' ? 'available' : 'unavailable'}">
+                                ${isInStock}
+                            </div>`;
+                }
+                }
+                li.innerHTML += `</div>
+            </div>`;
+
+
+
+                // li.innerHTML = `
+                //     <div class="product-item-info type1" data-container="product-grid">
+                //         <div class="product photo product-item-photo">
+                //             <a href="${productUrl}" tabindex="-1">
+                //                 <img class="product-image-photo default_image" src="${imageUrl}" alt="${productName}">
+                //             </a>
+                //         </div>
+                //         <div class="product details product-item-details">
+                //             <strong class="product name product-item-name">
+                //                 <a class="product-item-link" href="${productUrl}">${productName}</a>
+                //             </strong>
+                //             ${isLoggedIn ? `
+                //             <div class="price-box price-final_price">
+                //                 <span class="price-container price-final_price tax weee">
+                //                     <span class="price-wrapper">£${price || '0.00'}</span>
+                //                 </span>
+                //             </div>
+                //             ` : `
+                //             <div class="price-box price-final_price">
+                //                 <span class="price-container price-final_price tax weee">
+                //                     <span class="price-wrapper">£<span class="price starprice">**˙**</span></span>
+                //                 </span>
+                //             </div>
+                //             <div class="callforprice-action callforprice-action-${productId}">
+                //                 <button type="button" title="Login for price" class="action primary">
+                //                     <span>Login for price</span>
+                //                 </button>
+                //             </div>
+                //             <div class="stock ${isInStock === 'In Stock' ? 'available' : 'unavailable'}">
+                //                 ${isInStock}
+                //             </div>
+                //             `}
+                //         </div>
+                //     </div>
+                // `;
+                container.appendChild(li);
+            });
+        }
+
+        function updatePaginationControls(totalFilteredProducts) {
+            const totalPages = Math.ceil(totalFilteredProducts / productsPerPage);
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            const pageInfo = document.getElementById('page-info');
+
+            if (prevButton && nextButton && pageInfo) {
+                prevButton.disabled = currentPage === 1;
+                nextButton.disabled = currentPage === totalPages || totalFilteredProducts === 0;
+                pageInfo.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+            }
+        }
+
+        function showLoader() {
+            document.getElementById('shatchi-loader-overlay')?.style.setProperty('display', 'flex');
+        }
+
+        function hideLoader() {
+            document.getElementById('shatchi-loader-overlay')?.style.setProperty('display', 'none');
+        }
+
+        function waitForImagesToLoad(container, callback) {
+            const images = container.querySelectorAll('img');
+            let loadedCount = 0;
+            const total = images.length;
+
+            if (total === 0) {
+                callback();
+                return;
+            }
+
+            images.forEach(img => {
+                if (img.complete) {
+                    loadedCount++;
+                    if (loadedCount === total) callback();
+                } else {
+                    img.addEventListener('load', () => {
+                        loadedCount++;
+                        if (loadedCount === total) callback();
+                    });
+                    img.addEventListener('error', () => {
+                        loadedCount++;
+                        if (loadedCount === total) callback();
+                    });
+                }
+            });
+        }
+        // New function to fetch products with retry logic
+        function fetchProducts(categoryId, cacheType, retries = 2, delay = 1000) {
+            showLoader();
+            const url = `/searchfilter3/ajax/products?category_id=${categoryId}&type=${cacheType}&t=${new Date().getTime()}`;
+            return fetch(url, {
+                    method: 'GET',
+                    cache: 'no-cache', // Prevent browser caching
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Fetch response:', data); // Debug response
+                    if (data.success && data.products && Array.isArray(data.products) && data.products.length > 0) {
+                        return data.products;
+                    }
+                    throw new Error('Invalid or empty product data');
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    if (retries > 0) {
+                        console.log(`Retrying... (${retries} attempts left)`);
+                        return new Promise(resolve => {
+                            setTimeout(() => {
+                                resolve(fetchProducts(categoryId, cacheType, retries - 1, delay * 2));
+                            }, delay);
+                        });
+                    }
+                    throw error;
+                });
+        }
+
+        function renderPage(page) {
+            currentPage = page;
+
+            // Apply all filters and sorting
+            filteredProducts = filterProducts(allProducts);
+            const sortedProducts = sortProducts(filteredProducts);
+
+            // Calculate pagination
+            const start = (page - 1) * productsPerPage;
+            const end = start + productsPerPage;
+            showLoader();
+            // Render the current page
+            renderProducts(sortedProducts.slice(start, end), <?= (int) $isLoggedIn ?>);
+            const container = document.getElementById('product-list-container');
+            waitForImagesToLoad(container, () => {
+
+                // Update pagination controls
+                updatePaginationControls(filteredProducts.length);
+                hideLoader();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize elements
+            const sorter = document.getElementById('sorter');
+            const pager = document.getElementById('pager');
+            const prevButton = document.getElementById('prev-page');
+            const nextButton = document.getElementById('next-page');
+            priceMinInput = document.getElementById('price-min');
+            priceMaxInput = document.getElementById('price-max');
+
+            if (!sorter || !pager || !prevButton || !nextButton || !priceMinInput || !priceMaxInput) {
+                console.error('Required DOM elements missing.');
+                return;
+            }
+
+            // Set initial slider values
+            priceMinInput.max = maxPrice;
+            priceMaxInput.max = maxPrice;
+            priceMinInput.value = 0;
+            priceMaxInput.value = maxPrice;
+
+            // Price slider events with debounce
+            priceMinInput.addEventListener('input', debounce(function() {
+                if (parseInt(priceMinInput.value) > parseInt(priceMaxInput.value)) {
+                    priceMinInput.value = priceMaxInput.value;
+                }
+                updatePriceLabel();
+                updateTrack();
+                currentPage = 1;
+                renderPage(currentPage);
+            }, 300));
+
+            priceMaxInput.addEventListener('input', debounce(function() {
+                if (parseInt(priceMaxInput.value) < parseInt(priceMinInput.value)) {
+                    priceMaxInput.value = priceMinInput.value;
+                }
+                updatePriceLabel();
+                updateTrack();
+                currentPage = 1;
+                renderPage(currentPage);
+            }, 300));
+
+            // Stock filter events
+            document.querySelectorAll('input[name="stock_filter"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    currentStockFilter = this.value;
+                    currentPage = 1;
+                    renderPage(currentPage);
+                });
+            });
+
+            // Reset button
+            document.getElementById('reset-filters').addEventListener('click', function() {
+                // Reset price range
+                priceMinInput.value = 0;
+                priceMaxInput.value = maxPrice;
+
+                // Reset stock filter
+                document.querySelector('input[name="stock_filter"][value="all"]').checked = true;
+                currentStockFilter = 'all';
+
+                // Reset sorter
+                // document.getElementById('sorter').value = 'name_asc';
+                // currentSort = 'name_asc';
+
+                // Reset pager (optional)
+                // document.getElementById('pager').value = '10';
+                // productsPerPage = 10;
+
+                // Update UI
+                updatePriceLabel();
+                updateTrack();
+
+                // Render first page with all products
+                currentPage = 1;
+                renderPage(currentPage);
+            });
+
+            // Sorter event
+            sorter.addEventListener('change', () => {
+                currentSort = sorter.value;
+                currentPage = 1;
+                renderPage(currentPage);
+            });
+
+            // Pager event
+            pager.addEventListener('change', () => {
+                productsPerPage = parseInt(pager.value, 10);
+                currentPage = 1;
+                renderPage(currentPage);
+            });
+
+            // Pagination events
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    renderPage(currentPage - 1);
+                }
+            });
+
+            nextButton.addEventListener('click', () => {
+                // const filteredProducts = filterProducts(allProducts);
+                const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+                if (currentPage < totalPages) {
+                    renderPage(currentPage + 1);
+                }
+            });
+
+            // Load products
+            const categoryId = <?= (int) $categoryId ?>;
+            const isLoggedIn = <?= (int) $isLoggedIn ?>;
+            const cacheType = isLoggedIn ? 'customer' : 'guest';
+
+            if (!categoryId) {
+                console.error('Category ID not found.');
+                return;
+            }
+            require(['jquery'], function($) {
+            alert("In mobile");
+                // fetchProducts(categoryId, cacheType)
+                // .then(products => {
+                //     allProducts = products;
+                //     updateSliderMaxPrice(allProducts);
+                //     renderPage(currentPage);
+                // })
+                // .catch(error => {
+                //     console.error('Failed to load products after retries:', error);
+                //     productContainer.innerHTML = '<p>Error loading products. Please try again later.</p>';
+                //     hideLoader();
+                // });
+                fetch(`/searchfilter3/ajax/products?category_id=${categoryId}&type=${cacheType}`, {
+                        method: 'GET'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.products) {
+                            allProducts = data.products;
+                            updateSliderMaxPrice(allProducts);
+                            renderPage(currentPage);
+                        } else {
+                            document.getElementById('product-list-container').innerHTML = '<p>No products found.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching products:', error);
+                        document.getElementById('product-list-container').innerHTML = '<p>Error loading products. Please try again later.</p>';
+                    });
+            });
+            // Initial UI updates
+            updatePriceLabel();
+            updateTrack();
+        });
+    });
+</script>

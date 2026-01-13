@@ -2,7 +2,7 @@
   "name": "mageplaza/module-search",
   "description": "Magento 2 Search extension",
   "require": {
-    "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
+    "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
     "mageplaza/module-core": "^1.5.3",
     "algolia/algoliasearch-client-php": "3.2"
   },

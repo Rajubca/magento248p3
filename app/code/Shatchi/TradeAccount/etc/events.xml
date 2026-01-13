@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <event name="customer_save_after">
+        <observer name="send_verification_email" instance="Shatchi\TradeAccount\Observer\SendVerificationEmail1"/>
+    </event>
+    <event name="customer_save_before">
+        <observer name="shatchi_customer_save_before" instance="Shatchi\TradeAccount\Observer\SendVerificationEmail2" /> <!-- <For conform that password changed> -->
+    </event>
+    <event name="controller_action_predispatch">
+        <observer name="shatchi_auto_logout_unapproved" instance="Shatchi\TradeAccount\Observer\AutoLogoutIfNotApproved" />
+    </event>
+    <event name="customer_save_commit_after">
+        <observer name="shatchi_tradeaccount_set_pending_status" instance="Shatchi\TradeAccount\Observer\SetCustomerPendingStatus"/>
+    </event>
+</config>

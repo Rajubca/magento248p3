@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    <body>
+    <referenceBlock name="checkout.cart.minimum" remove="true"/>
+
+        <!-- Keep core messages; we'll add our own banner above the cart -->
+        <referenceContainer name="page.messages">
+        
+            <container name="shatchi.cart.banner.wrapper"
+                       as="shatchi_cart_banner_wrapper"
+                       label="Cart Top Banner"
+                       htmlTag="div"
+                       htmlId="cart-top-banner">
+                <block class="Shatchi\CustomCheckout\Block\Cart\Banner"
+                       name="shatchi.cart.banner"
+                       template="Shatchi_CustomCheckout::cart/banner.phtml"/>
+            </container>
+        </referenceContainer>
+
+        <referenceContainer name="content">
+            <!-- Centralized Magento messages (errors/notices from messageManager) -->
+            <container name="shatchi.cart.messages.wrapper"
+                       as="shatchi_cart_messages_wrapper"
+                       label="Shatchi Cart Messages Wrapper"
+                       htmlTag="div"
+                       htmlId="shatchi-cart-messages"
+                       before="checkout.cart.form">
+                <block class="Magento\Framework\View\Element\Messages"
+                       name="shatchi.cart.messages"
+                       as="messages"
+                       template="Magento_Theme::messages.phtml"/>
+                <block class="Magento\Framework\View\Element\Template"
+                    name="shatchi.customcheckout.cartajax.init"
+                    template="Shatchi_CustomCheckout::init/cart-ajax-init.phtml"
+                    after="-"/>
+
+            </container>
+
+            <!-- Your custom cart form -->
+            <referenceBlock name="checkout.cart.form">
+                <action method="setTemplate">
+                    <argument name="template" xsi:type="string">Shatchi_CustomCheckout::cart/form.phtml</argument>
+                </action>
+            </referenceBlock>
+
+            <!-- Your item renderer -->
+            <referenceBlock name="checkout.cart.item.renderers.default">
+                <action method="setTemplate">
+                    <argument name="template" xsi:type="string">Shatchi_CustomCheckout::cart/item/default.phtml</argument>
+                </action>
+            </referenceBlock>
+            <referenceBlock name="checkout.cart.item.renderers.simple">
+                <action method="setTemplate">
+                    <argument name="template" xsi:type="string">Shatchi_CustomCheckout::cart/item/default.phtml</argument>
+                </action>
+            </referenceBlock>
+
+            <referenceBlock name="update_cart" remove="true"/>
+        </referenceContainer>
+
+        <!-- Totals stay -->
+        <referenceBlock name="checkout.cart.totals"/>
+    </body>
+</page>

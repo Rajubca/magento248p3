@@ -1,0 +1,61 @@
+<div style="background-color: #fbfbfb;padding: 4rem 0;">
+    <div class="container">
+        <div id="occasions-products" class="porto-products title-border-bottom col-sm-12 col-md-8 offset-sm-2">
+            <h2 class="section-title slider-title"><span class="inline-title">Occasions Products</span><span class="line"></span></h2>
+            <div class="slider-wrapper">
+                <?= $this->getLayout()
+                    ->createBlock('Smartwave\Filterproducts\Block\Home\LatestList')
+                    ->setData([
+                        'extra_class' => 'show-dots-title-right dots-style-1',
+                        'product_count' => 12,
+                        'aspect_ratio' => 0,
+                        'image_width' => 250,
+                        'image_height' => 250,
+                        'category_id' => 6
+                    ])
+                    ->setTemplate('Smartwave_Filterproducts::owl_list.phtml')
+                    ->toHtml();
+                ?>
+
+                <script type="text/javascript">
+                    require([
+                        'jquery',
+                        'owl.carousel/owl.carousel.min'
+                    ], function($) {
+                        $("#occasions-products .owl-carousel").owlCarousel({
+                            autoplay: false,
+                            autoplayTimeout: 5000,
+                            autoplayHoverPause: true,
+                            loop: true,
+                            navRewind: true,
+                            lazyLoad: true,
+                            margin: 0,
+                            nav: false,
+                            dots: true,
+                            responsive: {
+                                0: {
+                                    items: 2
+                                },
+                                640: {
+                                    items: 3
+                                },
+                                768: {
+                                    items: 4,
+                                },
+                                992: {
+                                    items: 5,
+                                },
+                                1200: {
+                                    items: 6,
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="col-sm-12 d-flex mt-5 justify-content-center align-items-center">
+            <button type="button" class="action primary col-3" onclick="location.href='{{config path="web/secure/base_url"}}halloween.html'">View All</button>
+        </div>
+    </div>
+</div>

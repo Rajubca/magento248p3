@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+      
+    <body>
+        <referenceBlock name="header.customer"> <!-- This is the block that renders the welcome text -->
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Magento_Theme::html/empty.phtml</argument>
+            </action>
+        </referenceBlock>	
+         <referenceBlock  name="customer.name" remove="true"/>
+       
+        <!-- Remove existing Porto header and related blocks -->
+        
+        <!-- <referenceBlock name="header" remove="true" /> -->
+         <!-- <referenceBlock name="header.links" remove="true"/> -->
+        <!-- <referenceBlock name="top.links" remove="true"/> -->
+        <!-- <referenceBlock name="customer.name" remove="true"/> -->
+        <!-- <referenceBlock name="authorization-link" remove="true" /> -->
+        <referenceBlock name="authorization-link-login" remove="true"/>
+        <!-- <referenceBlock name="contact-link" remove="true"/> -->
+
+        <!-- Replace Porto header template with your custom one -->
+        <referenceBlock name="porto_header">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Shatchi_WelcomeMessage::html/header.phtml</argument>
+            </action>
+        </referenceBlock>
+        
+    </body>
+</page>
